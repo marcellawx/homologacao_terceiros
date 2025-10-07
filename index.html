@@ -16,8 +16,24 @@
         h2 { font-size: 20px; }
         h3 { font-size: 18px; border-bottom: 1px solid #EEE; padding-bottom: 5px;}
         p, li, .email-body { line-height: 1.7; font-size: 16px; }
-        .stepper { display: flex; justify-content: space-between; margin: 30px 0; position: relative; }
-        .step { text-align: center; flex-grow: 1; position: relative; font-size: 12px; }
+        
+        /* --- CORREÇÃO CSS PARA GARANTIR LAYOUT HORIZONTAL --- */
+        .stepper { 
+            display: flex; 
+            flex-direction: row; /* Garante a direção horizontal */
+            justify-content: space-between; 
+            margin: 30px 0; 
+            position: relative;
+            width: 100%;
+        }
+        .step { 
+            text-align: center; 
+            flex: 1; /* Permite que os itens cresçam e ocupem o espaço */
+            position: relative; 
+            font-size: 12px;
+        }
+        /* --- FIM DA CORREÇÃO --- */
+
         .step-icon { width: 30px; height: 30px; border-radius: 50%; background-color: #CCC; color: white; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; border: 3px solid #CCC; transition: all 0.3s ease; }
         .step-label { margin-top: 8px; color: #888; }
         .step.active .step-icon { background-color: var(--cor-primaria); border-color: var(--cor-primaria); }
@@ -34,8 +50,8 @@
         .btn-approve { background-color: var(--cor-sucesso); }
         .btn-reject { background-color: var(--cor-perigo); }
         .btn:disabled { background-color: #BDBDBD; cursor: not-allowed; }
+        hr { border: 0; height: 1px; background-color: #DDD; margin: 25px 0; }
         
-        /* Estilos para Upload de Docs */
         .doc-list { list-style: none; padding: 0; }
         .doc-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #EEE; background: #FFF; margin-bottom: 10px; border-radius: 5px; }
         .doc-item.rejected { border-left: 5px solid var(--cor-perigo); }
@@ -44,13 +60,11 @@
         .upload-btn.uploaded { background-color: var(--cor-sucesso) !important; }
         .error-msg { font-size: 14px; color: var(--cor-perigo); }
 
-        /* Estilos para Seleção de Funções */
         .roles-table { width: 100%; margin-top: 20px; border-collapse: collapse; }
         .roles-table th, .roles-table td { padding: 12px; border: 1px solid #DDD; text-align: left; }
         .roles-table th { background-color: #f2f2f2; }
         .roles-table td:first-child { width: 40px; text-align: center; }
 
-        /* Controles de Simulação */
         .simulation-controls { max-width: 900px; margin: 20px auto; padding: 15px; background-color: #FFF8E1; border: 1px solid #FFECB3; border-radius: 8px; text-align: center; }
         .simulation-controls p { margin: 0 0 10px 0; font-weight: bold; color: #6D4C41;}
     </style>
@@ -84,7 +98,7 @@
 
         // BANCO DE DADOS DE FUNÇÕES
         const masterRolesList = {
-            "TERCEIRO PROTHEUS": 113.00, "TERCEIRO RM": 113.00, "TERCEIRO FLUIG": 118.50,
+            "TERCEiro PROTHEUS": 113.00, "TERCEIRO RM": 113.00, "TERCEIRO FLUIG": 118.50,
             "TERCEIRO DATASUL": 113.00, "TERCEIRO SIGA EIC": 146.50, "TERCEIRO ADVPL": 122.50,
             "TERCEIRO DBA": 128.00, "TERCEIRO SAUDE": 135.00, "TERCEIRO HOSPITALIDADE": 124.00,
             "TERCEIRO PIMS": 139.00, "TERCEIRO GOODDATA": 128.00, "TERCEIRO TIN TOP": 146.50
@@ -114,7 +128,6 @@
             `;
             container.innerHTML = processoState.aprovadoInicial ? etapasCompletas : etapasIniciais;
             
-            // Atualiza status visual
             document.querySelectorAll('.step').forEach(s => s.classList.remove('active', 'completed', 'rejected'));
             let stepId;
             if (processoState.etapa === 'boasVindas') stepId = 'step-boasVindas';
@@ -226,9 +239,16 @@
                             <h3>VALOR HORA (BRUTO) POR ESPECIALIDADE APROVADA</h3>
                             <table class="roles-table">
                                 <thead><tr><th>FUNÇÃO</th><th>VALOR HORA</th></tr></thead>
-                                <tbody>${finalRolesHtml}</tbody>
+                                <tbody>${finalRolesHtml.length > 0 ? finalRolesHtml : '<tr><td colspan="2">Nenhuma função selecionada.</td></tr>'}</tbody>
                             </table>
-                            <p style="margin-top:20px;">Acesse todo o conteúdo de Gestão de Terceiros no documento anexo, que foi construído para ajudar você a conhecer um pouquinho do mundo TOTVS e entender nossos processos e fluxos.</p>
+                            
+                            <hr>
+                            <h3>Onboarding de Processos</h3>
+                            <p>Desejamos bater um papo para explicar todos os processos para alocação e cadastro de recursos, pagamento, e processos da área de Gestão de Terceiros.</p>
+                            <p>Caso tenha outras pessoas da parte administrativa da Consultoria, pode incluí-los. Aguardamos você!</p>
+                            <div class="action-buttons" style="justify-content: flex-start; margin-top: 15px;">
+                                <a href="https://calendar.app.google/aPbUpr7DYMj91iU37" target="_blank" class="btn btn-primary">Agendar Reunião de Onboarding</a>
+                            </div>
                             <div class="action-buttons">
                                 <button class="btn btn-primary" onclick="resetState()">Voltar ao Início</button>
                             </div>`;
