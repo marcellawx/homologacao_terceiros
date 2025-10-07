@@ -4,70 +4,74 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Protótipo - Portal de Homologação do Fornecedor</title>
-    <style>
-        :root {
-            --cor-primaria: #0072C6; --cor-sucesso: #28a745; --cor-perigo: #dc3545;
-            --cor-aviso: #FFC107; --cor-fundo: #F0F0F0; --cor-texto: #333;
-        }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--cor-fundo); margin: 0; padding: 20px; color: var(--cor-texto); }
-        .container { max-width: 900px; margin: 20px auto; background-color: #FFF; padding: 25px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-        h1, h2, h3 { color: var(--cor-primaria); }
-        h1 { border-bottom: 2px solid #EEE; padding-bottom: 10px; margin-top: 0; font-size: 24px; }
-        h2 { font-size: 20px; }
-        h3 { font-size: 18px; border-bottom: 1px solid #EEE; padding-bottom: 5px;}
-        p, li, .email-body { line-height: 1.7; font-size: 16px; }
-        
-        /* --- CORREÇÃO CSS PARA GARANTIR LAYOUT HORIZONTAL --- */
-        .stepper { 
-            display: flex; 
-            flex-direction: row; /* Garante a direção horizontal */
-            justify-content: space-between; 
-            margin: 30px 0; 
-            position: relative;
-            width: 100%;
-        }
-        .step { 
-            text-align: center; 
-            flex: 1; /* Permite que os itens cresçam e ocupem o espaço */
-            position: relative; 
-            font-size: 12px;
-        }
-        /* --- FIM DA CORREÇÃO --- */
+   /* Copie e cole este bloco inteiro no lugar do seu <style>...</style> antigo */
+<style>
+    :root {
+        --cor-primaria: #0072C6; --cor-sucesso: #28a745; --cor-perigo: #dc3545;
+        --cor-aviso: #FFC107; --cor-fundo: #F0F0F0; --cor-texto: #333;
+    }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--cor-fundo); margin: 0; padding: 20px; color: var(--cor-texto); }
+    .container { max-width: 900px; margin: 20px auto; background-color: #FFF; padding: 25px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    h1, h2, h3 { color: var(--cor-primaria); }
+    h1 { border-bottom: 2px solid #EEE; padding-bottom: 10px; margin-top: 0; font-size: 24px; }
+    h2 { font-size: 20px; }
+    h3 { font-size: 18px; border-bottom: 1px solid #EEE; padding-bottom: 5px;}
+    p, li, .email-body { line-height: 1.7; font-size: 16px; }
+    
+    /* --- CÓDIGO CSS "À PROVA DE FALHAS" PARA O STEPPER --- */
+    .stepper { 
+        display: flex !important; /* Força o modo flex */
+        flex-direction: row !important; /* Força a direção horizontal */
+        justify-content: space-between; 
+        margin: 30px 0; 
+        position: relative;
+        width: 100%;
+        border: 1px solid red; /* Borda de depuração */
+    }
+    .step { 
+        text-align: center; 
+        flex: 1; 
+        position: relative; 
+        font-size: 12px;
+        padding: 5px;
+        border: 1px solid red; /* Borda de depuração */
+    }
+    /* --- FIM DA CORREÇÃO --- */
 
-        .step-icon { width: 30px; height: 30px; border-radius: 50%; background-color: #CCC; color: white; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; border: 3px solid #CCC; transition: all 0.3s ease; }
-        .step-label { margin-top: 8px; color: #888; }
-        .step.active .step-icon { background-color: var(--cor-primaria); border-color: var(--cor-primaria); }
-        .step.active .step-label { color: var(--cor-primaria); font-weight: bold; }
-        .step.completed .step-icon { background-color: var(--cor-sucesso); border-color: var(--cor-sucesso); }
-        .step.completed .step-label { color: var(--cor-sucesso); }
-        .step.rejected .step-icon { background-color: var(--cor-perigo); border-color: var(--cor-perigo); }
-        .step.rejected .step-label { color: var(--cor-perigo); }
-        .stepper::before { content: ''; position: absolute; top: 16px; left: 5%; right: 5%; height: 4px; background-color: #CCC; z-index: -1; }
-        .task-card { border: 1px solid #DDD; padding: 25px; border-radius: 8px; background-color: #FAFAFA; }
-        .action-buttons { margin-top: 30px; text-align: right; display: flex; justify-content: flex-end; align-items: center; gap: 10px; flex-wrap: wrap; }
-        .btn { padding: 12px 25px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; text-decoration: none; display: inline-block; color: white; transition: background-color 0.3s ease; }
-        .btn-primary { background-color: var(--cor-primaria); }
-        .btn-approve { background-color: var(--cor-sucesso); }
-        .btn-reject { background-color: var(--cor-perigo); }
-        .btn:disabled { background-color: #BDBDBD; cursor: not-allowed; }
-        hr { border: 0; height: 1px; background-color: #DDD; margin: 25px 0; }
-        
-        .doc-list { list-style: none; padding: 0; }
-        .doc-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #EEE; background: #FFF; margin-bottom: 10px; border-radius: 5px; }
-        .doc-item.rejected { border-left: 5px solid var(--cor-perigo); }
-        .doc-item span { flex-grow: 1; margin-right: 15px; }
-        .upload-btn { font-size: 14px; padding: 8px 12px; min-width: 120px; text-align: center;}
-        .upload-btn.uploaded { background-color: var(--cor-sucesso) !important; }
-        .error-msg { font-size: 14px; color: var(--cor-perigo); }
+    .step-icon { width: 30px; height: 30px; border-radius: 50%; background-color: #CCC; color: white; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; border: 3px solid #CCC; transition: all 0.3s ease; }
+    .step-label { margin-top: 8px; color: #888; }
+    .step.active .step-icon { background-color: var(--cor-primaria); border-color: var(--cor-primaria); }
+    .step.active .step-label { color: var(--cor-primaria); font-weight: bold; }
+    .step.completed .step-icon { background-color: var(--cor-sucesso); border-color: var(--cor-sucesso); }
+    .step.completed .step-label { color: var(--cor-sucesso); }
+    .step.rejected .step-icon { background-color: var(--cor-perigo); border-color: var(--cor-perigo); }
+    .step.rejected .step-label { color: var(--cor-perigo); }
+    .stepper::before { content: ''; position: absolute; top: 16px; left: 5%; right: 5%; height: 4px; background-color: #CCC; z-index: -1; }
+    .task-card { border: 1px solid #DDD; padding: 25px; border-radius: 8px; background-color: #FAFAFA; }
+    .action-buttons { margin-top: 30px; text-align: right; display: flex; justify-content: flex-end; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .btn { padding: 12px 25px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; text-decoration: none; display: inline-block; color: white; transition: background-color 0.3s ease; }
+    .btn-primary { background-color: var(--cor-primaria); }
+    .btn-approve { background-color: var(--cor-sucesso); }
+    .btn-reject { background-color: var(--cor-perigo); }
+    .btn:disabled { background-color: #BDBDBD; cursor: not-allowed; }
+    hr { border: 0; height: 1px; background-color: #DDD; margin: 25px 0; }
+    
+    .doc-list { list-style: none; padding: 0; }
+    .doc-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #EEE; background: #FFF; margin-bottom: 10px; border-radius: 5px; }
+    .doc-item.rejected { border-left: 5px solid var(--cor-perigo); }
+    .doc-item span { flex-grow: 1; margin-right: 15px; }
+    .upload-btn { font-size: 14px; padding: 8px 12px; min-width: 120px; text-align: center;}
+    .upload-btn.uploaded { background-color: var(--cor-sucesso) !important; }
+    .error-msg { font-size: 14px; color: var(--cor-perigo); }
 
-        .roles-table { width: 100%; margin-top: 20px; border-collapse: collapse; }
-        .roles-table th, .roles-table td { padding: 12px; border: 1px solid #DDD; text-align: left; }
-        .roles-table th { background-color: #f2f2f2; }
-        .roles-table td:first-child { width: 40px; text-align: center; }
+    .roles-table { width: 100%; margin-top: 20px; border-collapse: collapse; }
+    .roles-table th, .roles-table td { padding: 12px; border: 1px solid #DDD; text-align: left; }
+    .roles-table th { background-color: #f2f2f2; }
+    .roles-table td:first-child { width: 40px; text-align: center; }
 
-        .simulation-controls { max-width: 900px; margin: 20px auto; padding: 15px; background-color: #FFF8E1; border: 1px solid #FFECB3; border-radius: 8px; text-align: center; }
-        .simulation-controls p { margin: 0 0 10px 0; font-weight: bold; color: #6D4C41;}
-    </style>
+    .simulation-controls { max-width: 900px; margin: 20px auto; padding: 15px; background-color: #FFF8E1; border: 1px solid #FFECB3; border-radius: 8px; text-align: center; }
+    .simulation-controls p { margin: 0 0 10px 0; font-weight: bold; color: #6D4C41;}
+</style>
 </head>
 <body>
     <div class="container">
