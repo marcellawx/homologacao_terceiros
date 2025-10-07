@@ -3,193 +3,315 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Protótipo - Acompanhamento de Homologação</title>
+    <title>Protótipo - Portal de Homologação do Fornecedor</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #F0F0F0;
-            margin: 0;
-            padding: 20px;
-            color: #333;
+        :root {
+            --cor-primaria: #0072C6; --cor-sucesso: #28a745; --cor-perigo: #dc3545;
+            --cor-aviso: #FFC107; --cor-fundo: #F0F0F0; --cor-texto: #333;
         }
-        .container {
-            max-width: 900px;
-            margin: auto;
-            background-color: #FFF;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
-        h1 {
-            color: #0072C6;
-            border-bottom: 2px solid #EEE;
-            padding-bottom: 10px;
-            margin-top: 0;
-            font-size: 24px;
-        }
-        h2 { font-size: 20px; color: #333; }
-        p, .email-body { line-height: 1.7; white-space: pre-wrap; font-family: inherit; font-size: 16px; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--cor-fundo); margin: 0; padding: 20px; color: var(--cor-texto); }
+        .container { max-width: 900px; margin: 20px auto; background-color: #FFF; padding: 25px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        h1, h2, h3 { color: var(--cor-primaria); }
+        h1 { border-bottom: 2px solid #EEE; padding-bottom: 10px; margin-top: 0; font-size: 24px; }
+        h2 { font-size: 20px; }
+        h3 { font-size: 18px; border-bottom: 1px solid #EEE; padding-bottom: 5px;}
+        p, li, .email-body { line-height: 1.7; font-size: 16px; }
         .stepper { display: flex; justify-content: space-between; margin: 30px 0; position: relative; }
-        .step { text-align: center; flex-grow: 1; position: relative; }
-        .step-icon {
-            width: 30px; height: 30px; border-radius: 50%;
-            background-color: #CCC; color: white;
-            display: inline-flex; align-items: center; justify-content: center;
-            font-weight: bold; border: 3px solid #CCC; transition: all 0.3s ease;
-        }
-        .step-label { margin-top: 10px; font-size: 14px; color: #888; }
-        .step.active .step-icon { background-color: #0072C6; border-color: #0072C6; }
-        .step.active .step-label { color: #0072C6; font-weight: bold; }
-        .step.completed .step-icon { background-color: #28a745; border-color: #28a745; }
-        .step.completed .step-label { color: #28a745; }
-        .step.rejected .step-icon { background-color: #dc3545; border-color: #dc3545; }
-        .step.rejected .step-label { color: #dc3545; }
+        .step { text-align: center; flex-grow: 1; position: relative; font-size: 12px; }
+        .step-icon { width: 30px; height: 30px; border-radius: 50%; background-color: #CCC; color: white; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; border: 3px solid #CCC; transition: all 0.3s ease; }
+        .step-label { margin-top: 8px; color: #888; }
+        .step.active .step-icon { background-color: var(--cor-primaria); border-color: var(--cor-primaria); }
+        .step.active .step-label { color: var(--cor-primaria); font-weight: bold; }
+        .step.completed .step-icon { background-color: var(--cor-sucesso); border-color: var(--cor-sucesso); }
+        .step.completed .step-label { color: var(--cor-sucesso); }
+        .step.rejected .step-icon { background-color: var(--cor-perigo); border-color: var(--cor-perigo); }
+        .step.rejected .step-label { color: var(--cor-perigo); }
+        .stepper::before { content: ''; position: absolute; top: 16px; left: 5%; right: 5%; height: 4px; background-color: #CCC; z-index: -1; }
+        .task-card { border: 1px solid #DDD; padding: 25px; border-radius: 8px; background-color: #FAFAFA; }
+        .action-buttons { margin-top: 30px; text-align: right; display: flex; justify-content: flex-end; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .btn { padding: 12px 25px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; text-decoration: none; display: inline-block; color: white; transition: background-color 0.3s ease; }
+        .btn-primary { background-color: var(--cor-primaria); }
+        .btn-approve { background-color: var(--cor-sucesso); }
+        .btn-reject { background-color: var(--cor-perigo); }
+        .btn:disabled { background-color: #BDBDBD; cursor: not-allowed; }
         
-        .stepper::before {
-            content: ''; position: absolute; top: 16px;
-            left: 5%; right: 5%; height: 4px;
-            background-color: #CCC; z-index: -1;
-        }
-        .task-card {
-            border: 1px solid #DDD; padding: 25px;
-            border-radius: 8px; background-color: #FAFAFA;
-        }
-        .action-buttons { margin-top: 30px; text-align: right; display: flex; justify-content: flex-end; align-items: center; gap: 10px; flex-wrap: wrap;}
-        .btn {
-            padding: 12px 25px; border: none; border-radius: 5px;
-            font-size: 16px; cursor: pointer; text-decoration: none;
-            display: inline-block; color: white;
-            transition: background-color 0.3s ease;
-        }
-        .btn-primary { background-color: #0072C6; }
-        .btn-primary:hover { background-color: #005a9e; }
-        .btn-approve { background-color: #28a745; }
-        .btn-approve:hover { background-color: #218838; }
-        .btn-reject { background-color: #dc3545; }
-        .btn-reject:hover { background-color: #c82333; }
-        .email-template { border: 1px solid #EAEAEA; background-color: #FFF; padding: 20px; border-radius: 5px; }
-        
+        /* Estilos para Upload de Docs */
+        .doc-list { list-style: none; padding: 0; }
+        .doc-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #EEE; background: #FFF; margin-bottom: 10px; border-radius: 5px; }
+        .doc-item.rejected { border-left: 5px solid var(--cor-perigo); }
+        .doc-item span { flex-grow: 1; margin-right: 15px; }
+        .upload-btn { font-size: 14px; padding: 8px 12px; min-width: 120px; text-align: center;}
+        .upload-btn.uploaded { background-color: var(--cor-sucesso) !important; }
+        .error-msg { font-size: 14px; color: var(--cor-perigo); }
+
+        /* Estilos para Seleção de Funções */
+        .roles-table { width: 100%; margin-top: 20px; border-collapse: collapse; }
+        .roles-table th, .roles-table td { padding: 12px; border: 1px solid #DDD; text-align: left; }
+        .roles-table th { background-color: #f2f2f2; }
+        .roles-table td:first-child { width: 40px; text-align: center; }
+
         /* Controles de Simulação */
-        .simulation-controls {
-            max-width: 900px; margin: 20px auto; padding: 15px;
-            background-color: #FFF8E1; border: 1px solid #FFECB3;
-            border-radius: 8px; text-align: center;
-        }
+        .simulation-controls { max-width: 900px; margin: 20px auto; padding: 15px; background-color: #FFF8E1; border: 1px solid #FFECB3; border-radius: 8px; text-align: center; }
         .simulation-controls p { margin: 0 0 10px 0; font-weight: bold; color: #6D4C41;}
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Acompanhe sua Homologação</h1>
-        
-        <div class="stepper">
-            <div id="step-1" class="step">
-                <div class="step-icon">1</div>
-                <div class="step-label">Agendar Reunião</div>
-            </div>
-            <div id="step-2" class="step">
-                <div class="step-icon">2</div>
-                <div class="step-label">Análise Interna</div>
-            </div>
-            <div id="step-3" class="step">
-                <div class="step-icon">✓</div>
-                <div class="step-label">Resultado</div>
-            </div>
-        </div>
-        
-        <div id="task-card-container" class="task-card">
-            </div>
+        <h1>Portal de Homologação de Fornecedores</h1>
+        <div id="stepper-container"></div>
+        <div id="task-card-container" class="task-card"></div>
     </div>
-
-    <div id="simulation-panel" class="simulation-controls" style="display: none;">
-        <p>Controles de Simulação (para apresentação)</p>
-        <button class="btn btn-approve" onclick="mostrarResultado('aprovado')">Simular Aprovação</button>
-        <button class="btn btn-reject" onclick="mostrarResultado('recusado')">Simular Recusa</button>
-    </div>
+    <div id="simulation-panel" class="simulation-controls" style="display: none;"></div>
 
     <script>
-        // Função para atualizar a aparência da barra de progresso (stepper)
-        function atualizarStepper(etapa, status = 'active') {
-            for (let i = 1; i <= 3; i++) {
-                document.getElementById(`step-${i}`).classList.remove('active', 'completed', 'rejected');
-            }
-            for (let i = 1; i < etapa; i++) {
-                 document.getElementById(`step-${i}`).classList.add('completed');
-            }
-            const etapaAtualEl = document.getElementById(`step-${etapa}`);
-            if (etapaAtualEl) etapaAtualEl.classList.add(status);
+        // ESTADO GLOBAL DO PROCESSO
+        let processoState = {
+            etapa: 'boasVindas', // boasVindas, docUpload, docAnalise, roleSelect, roleAnalise, contrato, finalizado
+            aprovadoInicial: false,
+            docs: {
+                cnpj: { status: 'pendente', nome: 'Cartão do CNPJ' },
+                cnaes: { status: 'pendente', nome: 'Comprovação de CNAEs Obrigatórios' },
+                municipal: { status: 'pendente', nome: 'Inscrição Municipal' },
+                social: { status: 'pendente', nome: 'Contrato/Estatuto Social' },
+                legal: { status: 'pendente', nome: 'Documento de Representantes Legais' },
+                fgts: { status: 'pendente', nome: 'Certidão Negativa de FGTS' },
+                inss: { status: 'pendente', nome: 'Certidão Negativa de INSS' },
+                cgu: { status: 'pendente', nome: 'Certidões CEIS e CNEP (Portal da Transparência)' }
+            },
+            rolesSelecionadas: [],
+            roleRejectionReason: ''
+        };
+
+        // BANCO DE DADOS DE FUNÇÕES
+        const masterRolesList = {
+            "TERCEIRO PROTHEUS": 113.00, "TERCEIRO RM": 113.00, "TERCEIRO FLUIG": 118.50,
+            "TERCEIRO DATASUL": 113.00, "TERCEIRO SIGA EIC": 146.50, "TERCEIRO ADVPL": 122.50,
+            "TERCEIRO DBA": 128.00, "TERCEIRO SAUDE": 135.00, "TERCEIRO HOSPITALIDADE": 124.00,
+            "TERCEIRO PIMS": 139.00, "TERCEIRO GOODDATA": 128.00, "TERCEIRO TIN TOP": 146.50
+        };
+
+        // FUNÇÃO PRINCIPAL QUE RODA A CADA MUDANÇA
+        function render() {
+            renderStepper();
+            renderCard();
+            renderSimulationPanel();
         }
 
-        // MOSTRA O CONTEÚDO PARA O FORNECEDOR
-        function mostrarConteudo(etapa) {
+        // --- FUNÇÕES DE RENDERIZAÇÃO ---
+        function renderStepper() {
+            const container = document.getElementById('stepper-container');
+            const etapasIniciais = `
+                <div id="step-boasVindas" class="step"><div class="step-icon">1</div><div class="step-label">Boas-vindas</div></div>
+                <div id="step-analiseInicial" class="step"><div class="step-icon">2</div><div class="step-label">Análise Interna</div></div>
+                <div id="step-resultadoInicial" class="step"><div class="step-icon">✓</div><div class="step-label">Resultado</div></div>
+            `;
+            const etapasCompletas = `
+                <div id="step-boasVindas" class="step"><div class="step-icon">1</div><div class="step-label">Boas-vindas</div></div>
+                <div id="step-docUpload" class="step"><div class="step-icon">2</div><div class="step-label">Documentação</div></div>
+                <div id="step-roleSelect" class="step"><div class="step-icon">3</div><div class="step-label">Funções</div></div>
+                <div id="step-contrato" class="step"><div class="step-icon">4</div><div class="step-label">Contrato</div></div>
+                <div id="step-finalizado" class="step"><div class="step-icon">✓</div><div class="step-label">Finalizado</div></div>
+            `;
+            container.innerHTML = processoState.aprovadoInicial ? etapasCompletas : etapasIniciais;
+            
+            // Atualiza status visual
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active', 'completed', 'rejected'));
+            let stepId;
+            if (processoState.etapa === 'boasVindas') stepId = 'step-boasVindas';
+            if (processoState.etapa === 'analiseInicial') stepId = 'step-analiseInicial';
+            if (processoState.etapa.includes('doc')) stepId = 'step-docUpload';
+            if (processoState.etapa.includes('role')) stepId = 'step-roleSelect';
+            if (processoState.etapa === 'contrato') stepId = 'step-contrato';
+            if (processoState.etapa === 'finalizado') stepId = 'step-finalizado';
+
+            if(stepId) {
+                const el = document.getElementById(stepId);
+                el.classList.add('active');
+                let current = el.previousElementSibling;
+                while (current) {
+                    current.classList.add('completed');
+                    current = current.previousElementSibling;
+                }
+            }
+        }
+
+        function renderCard() {
             const container = document.getElementById('task-card-container');
-            const sim_panel = document.getElementById('simulation-panel');
-            let conteudoHTML = '';
-            sim_panel.style.display = 'none'; // Esconde painel de simulação por padrão
-
-            switch (etapa) {
-                case 1: // Etapa de Agendamento
-                    atualizarStepper(1, 'active');
-                    conteudoHTML = `
-                        <h2>Olá! Seja bem-vindo(a) ao nosso processo de homologação.</h2>
-                        <p>O primeiro passo é um bate-papo para alinharmos os processos internos de alocação, cadastro, pagamentos e a gestão de terceiros. Por favor, utilize o link abaixo para agendar o melhor horário.</p>
-                        <div class="email-template">
-                            <div class="email-body">Convidamos você e, se desejar, outros membros da área administrativa da sua empresa, para esta conversa.
-                            
-Aguardamos o seu contato!</div>
-                        </div>
-                        <div class="action-buttons">
-                            <a href="https://calendar.app.google/tTR9o38SeHiqCSdU9" target="_blank" class="btn btn-primary">Agendar Bate-papo</a>
-                            <button class="btn btn-approve" onclick="mostrarConteudo(2)">Já agendei, e agora?</button>
-                        </div>`;
+            let html = '';
+            switch (processoState.etapa) {
+                case 'boasVindas':
+                    html = `<h2>Olá! Seja bem-vindo(a) ao nosso processo de homologação.</h2>
+                            <p>O primeiro passo é um bate-papo para alinharmos os processos. Por favor, utilize o link abaixo para agendar o melhor horário.</p>
+                            <div class="action-buttons">
+                                <a href="https://calendar.app.google/tTR9o38SeHiqCSdU9" target="_blank" class="btn btn-primary">Agendar Bate-papo</a>
+                                <button class="btn btn-approve" onclick="setState({etapa: 'analiseInicial'})">Já agendei, e agora?</button>
+                            </div>`;
                     break;
-                
-                case 2: // Etapa de Aguardo
-                    atualizarStepper(2, 'active');
-                    sim_panel.style.display = 'block'; // Mostra painel de simulação
-                    conteudoHTML = `
-                        <h2>Perfeito! Reunião agendada.</h2>
-                        <p>Nossa equipe já foi notificada. Após a nossa conversa, faremos uma análise interna e o status do seu processo será atualizado automaticamente aqui neste portal.</p>
-                        <p><strong>Status atual:</strong> Aguardando análise interna.</p>
-                        `;
+                case 'analiseInicial':
+                     html = `<h2>Perfeito! Reunião agendada.</h2>
+                             <p>Após a nossa conversa, faremos uma análise interna e o status será atualizado aqui. <strong>Status atual:</strong> Aguardando análise interna.</p>`;
+                    break;
+                case 'recusadoInicial':
+                    html = `<h2>Processo de Homologação</h2>
+                            <p>Agradecemos o seu tempo e interesse. Neste momento, não daremos continuidade ao seu processo de homologação.</p>
+                            <div class="action-buttons"><button class="btn btn-primary" onclick="resetState()">Voltar ao Início</button></div>`;
+                    break;
+                case 'docUpload':
+                    const allDocsUploaded = Object.values(processoState.docs).every(d => d.status === 'uploaded');
+                    let docListHtml = Object.keys(processoState.docs).map(key => {
+                        const doc = processoState.docs[key];
+                        const isRejected = doc.status === 'rejeitado';
+                        return `<li class="doc-item ${isRejected ? 'rejected' : ''}">
+                                    <span>${doc.nome} ${isRejected ? '<br><small class="error-msg">Por favor, envie um documento válido.</small>' : ''}</span>
+                                    <button class="upload-btn btn ${doc.status === 'uploaded' ? 'uploaded' : 'btn-primary'}" onclick="toggleUpload('${key}')">
+                                        ${doc.status === 'uploaded' ? 'Enviado ✓' : 'Anexar'}
+                                    </button>
+                                </li>`;
+                    }).join('');
+                    html = `<h2>Etapa de Documentação</h2>
+                            <p>Por favor, anexe os seguintes documentos atualizados (emitidos nos últimos 30 dias).<br><strong>Importante:</strong> Não são permitidas empresas individuais ou Sociedade Unipessoal.</p>
+                            <ul class="doc-list">${docListHtml}</ul>
+                            <div class="action-buttons">
+                                <button class="btn btn-approve" ${!allDocsUploaded ? 'disabled' : ''} onclick="setState({etapa: 'docAnalise'})">Enviar Documentos para Análise</button>
+                            </div>`;
+                    break;
+                case 'docAnalise':
+                    html = `<h2>Documentação em Análise</h2>
+                            <p>Recebemos seus documentos. Nossa equipe está validando as informações e em breve o status será atualizado aqui.</p>`;
+                    break;
+                case 'roleSelect':
+                    let rolesCheckboxesHtml = Object.keys(masterRolesList).map(role => `
+                        <tr>
+                            <td><input type="checkbox" id="${role}" value="${role}" ${processoState.rolesSelecionadas.includes(role) ? 'checked' : ''}></td>
+                            <td><label for="${role}">${role}</label></td>
+                            <td>R$ ${masterRolesList[role].toFixed(2).replace('.',',')}</td>
+                        </tr>
+                    `).join('');
+                    html = `<h2>Seleção de Funções e Especialidades</h2>
+                            <p>Obrigada pelo envio dos documentos. Dando continuidade ao processo, por favor, informe quais especialidades precisará incluir em contrato.</p>
+                            ${processoState.roleRejectionReason ? `<div style="color:var(--cor-perigo); padding:10px; border:1px solid var(--cor-perigo); border-radius:5px; margin-bottom:15px;"><strong>Motivo da recusa anterior:</strong> ${processoState.roleRejectionReason}</div>` : ''}
+                            <details>
+                                <summary><strong>Clique para ver os detalhes dos modelos de alocação (Escopo Fechado vs. Banco de Horas)</strong></summary>
+                                <div style="padding:15px; background:#f9f9f9; border-radius:5px; margin-top:10px;">
+                                <h3>1 - Escopo Fechado</h3><p>A alocação é tratada através de uma proposta comercial emitida pela sua empresa contra a TOTVS, com escopo, valor total e marcos de entrega. A gestão do projeto se mantém com vocês, com acompanhamento da TOTVS.</p>
+                                <h3>2 - Banco de Horas</h3><p>Alocamos um técnico para atuar por hora, com gestão da TOTVS. O valor/hora é fixo por especialidade, conforme incluído no Contrato, negociado pelo time de Serviços Corporativos.</p>
+                                <p><small>A TOTVS não pode contratar recursos e/ou empresa para consultoria em LGPD, atividades comerciais e atividades de liderança.</small></p>
+                                </div>
+                            </details>
+                            <table class="roles-table">
+                                <thead><tr><th></th><th>Descrição da Especialidade</th><th>Valor Hora Bruto</th></tr></thead>
+                                <tbody>${rolesCheckboxesHtml}</tbody>
+                            </table>
+                            <div class="action-buttons">
+                                <button class="btn btn-approve" onclick="submitRoles()">Enviar para Análise</button>
+                            </div>`;
+                    break;
+                case 'roleAnalise':
+                     html = `<h2>Funções em Análise</h2>
+                             <p>Recebemos as especialidades selecionadas. Nosso gestor está avaliando a inclusão em contrato e em breve retornaremos.</p>`;
+                    break;
+                case 'contrato':
+                     html = `<h2>Contrato em Processamento</h2>
+                             <p>Parabéns! Suas funções foram aprovadas. Seu contrato foi encaminhado para a área responsável e está em fase de elaboração e coleta de assinaturas. Este processo leva em média 30 dias. Assim que finalizado, o status aqui será atualizado.</p>`;
+                    break;
+                case 'finalizado':
+                    let finalRolesHtml = processoState.rolesSelecionadas.map(role => `
+                        <tr>
+                            <td>${role}</td>
+                            <td>R$ ${masterRolesList[role].toFixed(2).replace('.',',')}</td>
+                        </tr>
+                    `).join('');
+                    html = `<h2>Sejam bem-vindos!</h2>
+                            <p>Desde <strong>${new Date().toLocaleDateString('pt-BR')}</strong>, sua empresa passou a fazer parte do modelo de prestação de serviços da TOTVS.</p>
+                            <h3>VALOR HORA (BRUTO) POR ESPECIALIDADE APROVADA</h3>
+                            <table class="roles-table">
+                                <thead><tr><th>FUNÇÃO</th><th>VALOR HORA</th></tr></thead>
+                                <tbody>${finalRolesHtml}</tbody>
+                            </table>
+                            <p style="margin-top:20px;">Acesse todo o conteúdo de Gestão de Terceiros no documento anexo, que foi construído para ajudar você a conhecer um pouquinho do mundo TOTVS e entender nossos processos e fluxos.</p>
+                            <div class="action-buttons">
+                                <button class="btn btn-primary" onclick="resetState()">Voltar ao Início</button>
+                            </div>`;
                     break;
             }
-            container.innerHTML = conteudoHTML;
+            container.innerHTML = html;
         }
 
-        function mostrarResultado(resultado) {
-            const container = document.getElementById('task-card-container');
-            const sim_panel = document.getElementById('simulation-panel');
-            sim_panel.style.display = 'none'; // Esconde o painel de simulação
-            let conteudoHTML = '';
-
-            if (resultado === 'aprovado') {
-                atualizarStepper(3, 'completed');
-                document.getElementById('step-2').classList.add('completed');
-                conteudoHTML = `
-                    <h2>Parabéns! Você foi aprovado na primeira etapa.</h2>
-                    <p>Ficamos felizes com o resultado da nossa conversa! O próximo passo será o envio da sua documentação para análise jurídica e fiscal. Em breve, você receberá um novo link para upload dos arquivos.</p>
-                    <div class="action-buttons">
-                         <button class="btn btn-primary" onclick="mostrarConteudo(1)">Voltar ao Início</button>
-                    </div>`;
-            } else { // resultado === 'recusado'
-                atualizarStepper(3, 'rejected');
-                document.getElementById('step-2').classList.add('rejected');
-                conteudoHTML = `
-                    <h2>Processo de Homologação</h2>
-                    <p>Agradecemos o seu tempo e interesse em ser um de nossos parceiros.</p>
-                    <p>Após análise interna, informamos que neste momento não daremos continuidade ao seu processo de homologação. Suas informações ficarão em nosso banco de dados para futuras oportunidades.</p>
-                     <div class="action-buttons">
-                         <button class="btn btn-primary" onclick="mostrarConteudo(1)">Voltar ao Início</button>
-                    </div>`;
+        function renderSimulationPanel() {
+            const panel = document.getElementById('simulation-panel');
+            let html = `<p>Controles de Simulação (para apresentação)</p>`;
+            switch (processoState.etapa) {
+                case 'analiseInicial':
+                    html += `<button class="btn btn-approve" onclick="simularAprovacaoInicial()">Simular Aprovação</button>
+                             <button class="btn btn-reject" onclick="setState({etapa: 'recusadoInicial'})">Simular Recusa</button>`;
+                    break;
+                case 'docAnalise':
+                    html += `<button class="btn btn-approve" onclick="setState({etapa: 'roleSelect'})">Simular Docs OK</button>
+                             <button class="btn btn-reject" onclick="simularDocError()">Simular Docs com Erro</button>`;
+                    break;
+                case 'roleAnalise':
+                     html += `<button class="btn btn-approve" onclick="setState({etapa: 'contrato'})">Simular Aprovação das Funções</button>
+                             <button class="btn btn-reject" onclick="simularRoleRejection()">Simular Recusa das Funções</button>`;
+                    break;
+                case 'contrato':
+                    html += `<button class="btn btn-approve" onclick="setState({etapa: 'finalizado'})">Simular Finalização do Contrato</button>`;
+                    break;
+                default:
+                    panel.style.display = 'none';
+                    return;
             }
-            container.innerHTML = conteudoHTML;
+            panel.innerHTML = html;
+            panel.style.display = 'block';
         }
 
-        // Inicia o protótipo na primeira etapa quando a página carrega
-        document.addEventListener('DOMContentLoaded', () => {
-            mostrarConteudo(1);
-        });
+        // --- FUNÇÕES DE LÓGICA E SIMULAÇÃO ---
+        function setState(newState) {
+            processoState = { ...processoState, ...newState };
+            render();
+        }
+
+        function resetState() {
+            processoState = {
+                etapa: 'boasVindas', aprovadoInicial: false,
+                docs: { cnpj: {status:'pendente', nome:'Cartão do CNPJ'}, cnaes: {status:'pendente', nome:'Comprovação de CNAEs Obrigatórios'}, municipal: {status:'pendente', nome:'Inscrição Municipal'}, social: {status:'pendente', nome:'Contrato/Estatuto Social'}, legal: {status:'pendente', nome:'Documento de Representantes Legais'}, fgts: {status:'pendente', nome:'Certidão Negativa de FGTS'}, inss: {status:'pendente', nome:'Certidão Negativa de INSS'}, cgu: {status:'pendente', nome:'Certidões CEIS e CNEP (Portal da Transparência)'} },
+                rolesSelecionadas: [], roleRejectionReason: ''
+            };
+            render();
+        }
+
+        function simularAprovacaoInicial() {
+            setState({ etapa: 'docUpload', aprovadoInicial: true });
+        }
+        
+        function toggleUpload(docKey) {
+            const currentStatus = processoState.docs[docKey].status;
+            processoState.docs[docKey].status = (currentStatus === 'pendente' || currentStatus === 'rejeitado') ? 'uploaded' : 'pendente';
+            render();
+        }
+
+        function simularDocError() {
+            processoState.docs.cnpj.status = 'rejeitado';
+            processoState.docs.social.status = 'rejeitado';
+            setState({ etapa: 'docUpload' });
+        }
+        
+        function submitRoles() {
+            const selected = [];
+            document.querySelectorAll('.roles-table input[type="checkbox"]:checked').forEach(checkbox => {
+                selected.push(checkbox.value);
+            });
+            setState({ etapa: 'roleAnalise', rolesSelecionadas: selected, roleRejectionReason: '' });
+        }
+
+        function simularRoleRejection() {
+            setState({
+                etapa: 'roleSelect',
+                roleRejectionReason: 'As especialidades de DBA e Saúde não podem ser incluídas no momento por questões de demanda interna. Por favor, ajuste sua seleção.'
+            });
+        }
+
+        // Inicia o protótipo
+        document.addEventListener('DOMContentLoaded', render);
     </script>
 </body>
 </html>
