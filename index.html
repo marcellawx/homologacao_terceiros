@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Protótipo - Homologação de Fornecedor (v2)</title>
+    <title>Protótipo - Acompanhamento de Homologação</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -42,7 +42,6 @@
         .step.active .step-label { color: #0072C6; font-weight: bold; }
         .step.completed .step-icon { background-color: #28a745; border-color: #28a745; }
         .step.completed .step-label { color: #28a745; }
-        /* NOVO ESTILO PARA ETAPA RECUSADA */
         .step.rejected .step-icon { background-color: #dc3545; border-color: #dc3545; }
         .step.rejected .step-label { color: #dc3545; }
         
@@ -69,24 +68,32 @@
         .btn-reject { background-color: #dc3545; }
         .btn-reject:hover { background-color: #c82333; }
         .email-template { border: 1px solid #EAEAEA; background-color: #FFF; padding: 20px; border-radius: 5px; }
+        
+        /* Controles de Simulação */
+        .simulation-controls {
+            max-width: 900px; margin: 20px auto; padding: 15px;
+            background-color: #FFF8E1; border: 1px solid #FFECB3;
+            border-radius: 8px; text-align: center;
+        }
+        .simulation-controls p { margin: 0 0 10px 0; font-weight: bold; color: #6D4C41;}
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Homologação de Fornecedor</h1>
+        <h1>Acompanhe sua Homologação</h1>
         
         <div class="stepper">
             <div id="step-1" class="step">
                 <div class="step-icon">1</div>
-                <div class="step-label">Convite Reunião</div>
+                <div class="step-label">Agendar Reunião</div>
             </div>
             <div id="step-2" class="step">
                 <div class="step-icon">2</div>
-                <div class="step-label">Decisão Pós-Reunião</div>
+                <div class="step-label">Análise Interna</div>
             </div>
             <div id="step-3" class="step">
                 <div class="step-icon">✓</div>
-                <div class="step-label">Processo Finalizado</div>
+                <div class="step-label">Resultado</div>
             </div>
         </div>
         
@@ -94,97 +101,86 @@
             </div>
     </div>
 
+    <div id="simulation-panel" class="simulation-controls" style="display: none;">
+        <p>Controles de Simulação (para apresentação)</p>
+        <button class="btn btn-approve" onclick="mostrarResultado('aprovado')">Simular Aprovação</button>
+        <button class="btn btn-reject" onclick="mostrarResultado('recusado')">Simular Recusa</button>
+    </div>
+
     <script>
         // Função para atualizar a aparência da barra de progresso (stepper)
         function atualizarStepper(etapa, status = 'active') {
-            // Limpa todos os status
             for (let i = 1; i <= 3; i++) {
                 document.getElementById(`step-${i}`).classList.remove('active', 'completed', 'rejected');
             }
-
-            // Define o status da etapa atual e das anteriores
             for (let i = 1; i < etapa; i++) {
                  document.getElementById(`step-${i}`).classList.add('completed');
             }
-            
             const etapaAtualEl = document.getElementById(`step-${etapa}`);
-            if (etapaAtualEl) {
-                etapaAtualEl.classList.add(status);
-            }
+            if (etapaAtualEl) etapaAtualEl.classList.add(status);
         }
 
-        // Função para renderizar (desenhar) o conteúdo de cada etapa no card
-        function renderizarCard(etapa) {
+        // MOSTRA O CONTEÚDO PARA O FORNECEDOR
+        function mostrarConteudo(etapa) {
             const container = document.getElementById('task-card-container');
+            const sim_panel = document.getElementById('simulation-panel');
             let conteudoHTML = '';
+            sim_panel.style.display = 'none'; // Esconde painel de simulação por padrão
 
             switch (etapa) {
-                case 1:
+                case 1: // Etapa de Agendamento
                     atualizarStepper(1, 'active');
                     conteudoHTML = `
-                        <h2>Etapa 1: Convidar Candidato para Reunião</h2>
-                        <p>Use o template abaixo para convidar o candidato. O botão de agendamento abrirá o link em uma nova aba.</p>
+                        <h2>Olá! Seja bem-vindo(a) ao nosso processo de homologação.</h2>
+                        <p>O primeiro passo é um bate-papo para alinharmos os processos internos de alocação, cadastro, pagamentos e a gestão de terceiros. Por favor, utilize o link abaixo para agendar o melhor horário.</p>
                         <div class="email-template">
-                            <p><strong>Para:</strong> [E-mail do candidato]</p>
-                            <p><strong>Assunto:</strong> Convite: Bate-papo para Homologação de Prestador de Serviços</p>
-                            <div class="email-body">Olá Prezado(a),
-
-Desejamos bater um papo para explicar todos os processos para alocação e cadastro de recursos, pagamento, e processos da área de Gestão de Terceiros.
-
-Caso tenha outras pessoas da parte administrativa da Consultoria pode incluí-los.
-
-Aguardamos você!</div>
+                            <div class="email-body">Convidamos você e, se desejar, outros membros da área administrativa da sua empresa, para esta conversa.
+                            
+Aguardamos o seu contato!</div>
                         </div>
                         <div class="action-buttons">
-                            <a href="https://calendar.app.google/LmR3X7K9M1vz1WBbA" target="_blank" class="btn btn-primary">Agendamento Bate Papo Homologação</a>
-                            <button class="btn btn-approve" onclick="renderizarCard(2)">Confirmar Envio e Avançar</button>
+                            <a href="https://calendar.app.google/tTR9o38SeHiqCSdU9" target="_blank" class="btn btn-primary">Agendar Bate-papo</a>
+                            <button class="btn btn-approve" onclick="mostrarConteudo(2)">Já agendei, e agora?</button>
                         </div>`;
                     break;
                 
-                case 2:
+                case 2: // Etapa de Aguardo
                     atualizarStepper(2, 'active');
+                    sim_panel.style.display = 'block'; // Mostra painel de simulação
                     conteudoHTML = `
-                        <h2>Etapa 2: Decisão Pós-Reunião</h2>
-                        <p>A reunião foi realizada. Com base na conversa e nos critérios da empresa, o candidato está apto para prosseguir com a homologação?</p>
-                        <div class="action-buttons">
-                            <button class="btn btn-reject" onclick="finalizarProcesso('recusado')">Recusado</button>
-                            <button class="btn btn-approve" onclick="finalizarProcesso('aprovado')">Aprovado</button>
-                        </div>`;
-                    break;
-                
-                case 3: // Estado final (aprovado ou recusado)
-                    // A lógica de finalização cuidará do conteúdo
+                        <h2>Perfeito! Reunião agendada.</h2>
+                        <p>Nossa equipe já foi notificada. Após a nossa conversa, faremos uma análise interna e o status do seu processo será atualizado automaticamente aqui neste portal.</p>
+                        <p><strong>Status atual:</strong> Aguardando análise interna.</p>
+                        `;
                     break;
             }
             container.innerHTML = conteudoHTML;
         }
 
-        // Função para lidar com o final do processo
-        function finalizarProcesso(resultado) {
+        function mostrarResultado(resultado) {
             const container = document.getElementById('task-card-container');
+            const sim_panel = document.getElementById('simulation-panel');
+            sim_panel.style.display = 'none'; // Esconde o painel de simulação
             let conteudoHTML = '';
 
             if (resultado === 'aprovado') {
-                document.getElementById('step-2').classList.remove('active');
+                atualizarStepper(3, 'completed');
                 document.getElementById('step-2').classList.add('completed');
-                atualizarStepper(3, 'completed'); // Marcar finalizado como concluído (verde)
-
                 conteudoHTML = `
-                    <h2>Processo Finalizado: Aprovado</h2>
-                    <p>O candidato foi aprovado e está apto para a próxima fase do processo de homologação (coleta de documentos, etc).</p>
+                    <h2>Parabéns! Você foi aprovado na primeira etapa.</h2>
+                    <p>Ficamos felizes com o resultado da nossa conversa! O próximo passo será o envio da sua documentação para análise jurídica e fiscal. Em breve, você receberá um novo link para upload dos arquivos.</p>
                     <div class="action-buttons">
-                         <button class="btn btn-primary" onclick="renderizarCard(1)">Iniciar Novo Processo</button>
+                         <button class="btn btn-primary" onclick="mostrarConteudo(1)">Voltar ao Início</button>
                     </div>`;
             } else { // resultado === 'recusado'
-                document.getElementById('step-2').classList.remove('active');
-                document.getElementById('step-2').classList.add('rejected'); // Marcar etapa 2 como recusada (vermelho)
-                atualizarStepper(3, 'rejected'); // Marcar finalizado como recusado (vermelho)
-
+                atualizarStepper(3, 'rejected');
+                document.getElementById('step-2').classList.add('rejected');
                 conteudoHTML = `
-                    <h2>Processo Finalizado: Recusado</h2>
-                    <p>O candidato não foi considerado apto para a homologação. O processo foi encerrado.</p>
+                    <h2>Processo de Homologação</h2>
+                    <p>Agradecemos o seu tempo e interesse em ser um de nossos parceiros.</p>
+                    <p>Após análise interna, informamos que neste momento não daremos continuidade ao seu processo de homologação. Suas informações ficarão em nosso banco de dados para futuras oportunidades.</p>
                      <div class="action-buttons">
-                         <button class="btn btn-primary" onclick="renderizarCard(1)">Iniciar Novo Processo</button>
+                         <button class="btn btn-primary" onclick="mostrarConteudo(1)">Voltar ao Início</button>
                     </div>`;
             }
             container.innerHTML = conteudoHTML;
@@ -192,7 +188,7 @@ Aguardamos você!</div>
 
         // Inicia o protótipo na primeira etapa quando a página carrega
         document.addEventListener('DOMContentLoaded', () => {
-            renderizarCard(1);
+            mostrarConteudo(1);
         });
     </script>
 </body>
