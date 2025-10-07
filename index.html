@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Protótipo - Homologação de Fornecedor</title>
+    <title>Protótipo Interativo - Homologação de Fornecedor</title>
     <style>
         /* ESTILOS GERAIS - Inspirado no Fluig Style Guide */
         body {
@@ -36,7 +36,7 @@
             color: #333;
         }
 
-        p {
+        p, li {
             line-height: 1.6;
         }
 
@@ -85,8 +85,6 @@
         .step.completed .step-label {
             color: #28a745;
         }
-        
-        /* LINHA DE CONEXÃO */
         .stepper::before {
             content: '';
             position: absolute;
@@ -98,7 +96,6 @@
             z-index: -1;
         }
 
-
         /* CARD DE TAREFA */
         .task-card {
             border: 1px solid #DDD;
@@ -107,7 +104,7 @@
             background-color: #FAFAFA;
         }
         
-        /* TABELA DE VALORES */
+        /* TABELA E LISTAS */
         .value-table {
             width: 100%;
             border-collapse: collapse;
@@ -126,6 +123,17 @@
         .value-table td:last-child {
             font-weight: bold;
         }
+        .checklist {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .checklist li {
+            background-color: #FFF;
+            border: 1px solid #EEE;
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 4px;
+        }
         
         /* BOTÕES DE AÇÃO */
         .action-buttons {
@@ -140,6 +148,13 @@
             cursor: pointer;
             margin-left: 10px;
             transition: background-color 0.3s ease;
+        }
+        .btn-primary {
+            background-color: #0072C6;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #005a9e;
         }
         .btn-approve {
             background-color: #28a745;
@@ -164,61 +179,126 @@
         <p><strong>Processo:</strong> #10542 &nbsp;&nbsp;&nbsp; <strong>Solicitante:</strong> Leonardo Fernandes</p>
 
         <div class="stepper">
-            <div class="step active">
+            <div id="step-1" class="step active">
                 <div class="step-icon">1</div>
                 <div class="step-label">Aprovação Gestor</div>
             </div>
-            <div class="step">
+            <div id="step-2" class="step">
                 <div class="step-icon">2</div>
                 <div class="step-label">Coleta de Docs</div>
             </div>
-            <div class="step">
+            <div id="step-3" class="step">
                 <div class="step-icon">3</div>
                 <div class="step-label">Cadastro Protheus</div>
             </div>
-            <div class="step">
+            <div id="step-4" class="step">
                 <div class="step-icon">4</div>
                 <div class="step-label">Finalização</div>
             </div>
         </div>
         
-        <div class="task-card">
-            <h2>Etapa 1: Aprovação do Gestor da Área</h2>
-            <p>Por favor, analise os valores propostos pelo fornecedor e aprove ou reprove a solicitação para darmos continuidade ao processo de homologação.</p>
-            
-            <table class="value-table">
-                <thead>
-                    <tr>
-                        <th>DESCRIÇÃO ESPECIALIDADE</th>
-                        <th>VALOR HORA BRUTO</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>TERCEIRO EM TI</td>
-                        <td>R$ 113,00</td>
-                    </tr>
-                    <tr>
-                        <td>TERCEIRO FLUIG</td>
-                        <td>R$ 118,50</td>
-                    </tr>
-                    <tr>
-                        <td>TERCEIRO SAÚDE</td>
-                        <td>R$ 135,00</td>
-                    </tr>
-                    <tr>
-                        <td>TERCEIRO HOSPITALIDADE</td>
-                        <td>R$ 124,00</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div class="action-buttons">
-                <button class="btn btn-reject">Reprovar</button>
-                <button class="btn btn-approve">Aprovar Proposta</button>
+        <div id="task-card-container" class="task-card">
             </div>
-        </div>
     </div>
 
+    <script>
+        // Guarda o estado atual do processo
+        let etapaAtual = 1;
+
+        // Conteúdo de cada etapa (títulos, descrições e HTML dos botões)
+        const etapas = [
+            // Etapa 1 (índice 0)
+            {
+                titulo: "Etapa 1: Aprovação do Gestor da Área",
+                descricao: "Por favor, analise os valores propostos pelo fornecedor e aprove ou reprove a solicitação para darmos continuidade.",
+                conteudo: `
+                    <table class="value-table">
+                        <thead>
+                            <tr><th>DESCRIÇÃO ESPECIALIDADE</th><th>VALOR HORA BRUTO</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>TERCEIRO EM TI</td><td>R$ 113,00</td></tr>
+                            <tr><td>TERCEIRO FLUIG</td><td>R$ 118,50</td></tr>
+                            <tr><td>TERCEIRO SAÚDE</td><td>R$ 135,00</td></tr>
+                            <tr><td>TERCEIRO HOSPITALIDADE</td><td>R$ 124,00</td></tr>
+                        </tbody>
+                    </table>`,
+                botoes: `
+                    <button class="btn btn-reject">Reprovar</button>
+                    <button class="btn btn-approve" onclick="avancarEtapa()">Aprovar Proposta</button>`
+            },
+            // Etapa 2 (índice 1)
+            {
+                titulo: "Etapa 2: Coleta de Documentação",
+                descricao: "Envie o e-mail para a empresa solicitando a documentação necessária para o processo de homologação.",
+                conteudo: `<p>Ao clicar no botão abaixo, o sistema simulará o envio do e-mail padrão 'GESTÃO DE TERCEIROS' para o fornecedor.</p>`,
+                botoes: `<button class="btn btn-primary" onclick="avancarEtapa()">Enviar E-mail e Avançar</button>`
+            },
+            // Etapa 3 (índice 2)
+            {
+                titulo: "Etapa 3: Cadastro e Validação no Protheus",
+                descricao: "Realize os passos de cadastro do contrato no sistema Protheus e valide as informações.",
+                conteudo: `
+                    <ul class="checklist">
+                        <li>Realizar extração de relatório Protheus para verificar se o Contrato está cadastrado.</li>
+                        <li>Colocar informação na planilha de Status e Acompanhamento.</li>
+                        <li>Solicitar para a área de CSTT PMO Local, abrir ticket para cadastro de contrato.</li>
+                        <li>Validar no Protheus se contrato foi finalizado/cadastrado e gerar relatório.</li>
+                    </ul>`,
+                botoes: `<button class="btn btn-primary" onclick="avancarEtapa()">Concluir Cadastro e Avançar</button>`
+            },
+            // Etapa 4 (índice 3)
+            {
+                titulo: "Etapa 4: Finalização do Processo",
+                descricao: "O fornecedor foi homologado com sucesso! Execute os passos finais de comunicação e onboarding.",
+                conteudo: `
+                    <ul class="checklist">
+                        <li>Responder ticket do Jira finalizando o processo.</li>
+                        <li>Bate papo Onboarding.</li>
+                        <li>Enviar e-mail de Boas Vindas.</li>
+                    </ul>`,
+                botoes: `<button class="btn btn-approve" onclick="window.location.reload()">Processo Finalizado! (Reiniciar Protótipo)</button>`
+            }
+        ];
+
+        // Função para desenhar o conteúdo do card na tela
+        function renderizarCard(numeroEtapa) {
+            const container = document.getElementById('task-card-container');
+            const dadosEtapa = etapas[numeroEtapa - 1]; // Pega os dados do array (índice - 1)
+
+            container.innerHTML = `
+                <h2>${dadosEtapa.titulo}</h2>
+                <p>${dadosEtapa.descricao}</p>
+                ${dadosEtapa.conteudo}
+                <div class="action-buttons">
+                    ${dadosEtapa.botoes}
+                </div>
+            `;
+        }
+
+        // Função principal para avançar as etapas
+        function avancarEtapa() {
+            if (etapaAtual >= 4) return; // Não faz nada se já estiver na última etapa
+
+            // Atualiza a barra de progresso (stepper)
+            const passoAtualEl = document.getElementById(`step-${etapaAtual}`);
+            passoAtualEl.classList.remove('active');
+            passoAtualEl.classList.add('completed');
+            
+            etapaAtual++; // Avança para a próxima etapa
+
+            const proximoPassoEl = document.getElementById(`step-${etapaAtual}`);
+            proximoPassoEl.classList.add('active');
+
+            // Renderiza o novo card com as informações da nova etapa
+            renderizarCard(etapaAtual);
+        }
+
+        // Quando a página carregar pela primeira vez, renderiza o card da primeira etapa
+        document.addEventListener('DOMContentLoaded', () => {
+            renderizarCard(etapaAtual);
+        });
+
+    </script>
 </body>
 </html>
