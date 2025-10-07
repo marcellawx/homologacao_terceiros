@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Protótipo Interativo - Homologação de Fornecedor</title>
+    <title>Protótipo - Homologação de Fornecedor (v2)</title>
     <style>
-        /* ESTILOS GERAIS - Inspirado no Fluig Style Guide */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #F0F0F0;
@@ -13,7 +12,6 @@
             padding: 20px;
             color: #333;
         }
-
         .container {
             max-width: 900px;
             margin: auto;
@@ -22,7 +20,6 @@
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
-
         h1 {
             color: #0072C6;
             border-bottom: 2px solid #EEE;
@@ -30,170 +27,66 @@
             margin-top: 0;
             font-size: 24px;
         }
-
-        h2 {
-            font-size: 20px;
-            color: #333;
-        }
-
-        p, li {
-            line-height: 1.6;
-        }
-
-        /* BARRA DE PROGRESSO / ETAPAS */
-        .stepper {
-            display: flex;
-            justify-content: space-between;
-            margin: 30px 0;
-            position: relative;
-        }
-        .step {
-            text-align: center;
-            flex-grow: 1;
-            position: relative;
-        }
+        h2 { font-size: 20px; color: #333; }
+        p, .email-body { line-height: 1.7; white-space: pre-wrap; font-family: inherit; font-size: 16px; }
+        .stepper { display: flex; justify-content: space-between; margin: 30px 0; position: relative; }
+        .step { text-align: center; flex-grow: 1; position: relative; }
         .step-icon {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background-color: #CCC;
-            color: white;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            border: 3px solid #CCC;
-            transition: all 0.3s ease;
+            width: 30px; height: 30px; border-radius: 50%;
+            background-color: #CCC; color: white;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-weight: bold; border: 3px solid #CCC; transition: all 0.3s ease;
         }
-        .step-label {
-            margin-top: 10px;
-            font-size: 14px;
-            color: #888;
-        }
-        .step.active .step-icon {
-            background-color: #0072C6;
-            border-color: #0072C6;
-        }
-        .step.active .step-label {
-            color: #0072C6;
-            font-weight: bold;
-        }
-        .step.completed .step-icon {
-            background-color: #28a745;
-            border-color: #28a745;
-        }
-        .step.completed .step-label {
-            color: #28a745;
-        }
+        .step-label { margin-top: 10px; font-size: 14px; color: #888; }
+        .step.active .step-icon { background-color: #0072C6; border-color: #0072C6; }
+        .step.active .step-label { color: #0072C6; font-weight: bold; }
+        .step.completed .step-icon { background-color: #28a745; border-color: #28a745; }
+        .step.completed .step-label { color: #28a745; }
+        /* NOVO ESTILO PARA ETAPA RECUSADA */
+        .step.rejected .step-icon { background-color: #dc3545; border-color: #dc3545; }
+        .step.rejected .step-label { color: #dc3545; }
+        
         .stepper::before {
-            content: '';
-            position: absolute;
-            top: 16px;
-            left: 5%;
-            right: 5%;
-            height: 4px;
-            background-color: #CCC;
-            z-index: -1;
+            content: ''; position: absolute; top: 16px;
+            left: 5%; right: 5%; height: 4px;
+            background-color: #CCC; z-index: -1;
         }
-
-        /* CARD DE TAREFA */
         .task-card {
-            border: 1px solid #DDD;
-            padding: 20px;
-            border-radius: 8px;
-            background-color: #FAFAFA;
+            border: 1px solid #DDD; padding: 25px;
+            border-radius: 8px; background-color: #FAFAFA;
         }
-        
-        /* TABELA E LISTAS */
-        .value-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-        .value-table th, .value-table td {
-            border: 1px solid #DDD;
-            padding: 12px;
-            text-align: left;
-        }
-        .value-table th {
-            background-color: #0072C6;
-            color: white;
-            font-weight: bold;
-        }
-        .value-table td:last-child {
-            font-weight: bold;
-        }
-        .checklist {
-            list-style-type: none;
-            padding-left: 0;
-        }
-        .checklist li {
-            background-color: #FFF;
-            border: 1px solid #EEE;
-            padding: 10px;
-            margin-bottom: 5px;
-            border-radius: 4px;
-        }
-        
-        /* BOTÕES DE AÇÃO */
-        .action-buttons {
-            margin-top: 30px;
-            text-align: right;
-        }
+        .action-buttons { margin-top: 30px; text-align: right; display: flex; justify-content: flex-end; align-items: center; gap: 10px; flex-wrap: wrap;}
         .btn {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            margin-left: 10px;
+            padding: 12px 25px; border: none; border-radius: 5px;
+            font-size: 16px; cursor: pointer; text-decoration: none;
+            display: inline-block; color: white;
             transition: background-color 0.3s ease;
         }
-        .btn-primary {
-            background-color: #0072C6;
-            color: white;
-        }
-        .btn-primary:hover {
-            background-color: #005a9e;
-        }
-        .btn-approve {
-            background-color: #28a745;
-            color: white;
-        }
-        .btn-approve:hover {
-            background-color: #218838;
-        }
-        .btn-reject {
-            background-color: #dc3545;
-            color: white;
-        }
-        .btn-reject:hover {
-            background-color: #c82333;
-        }
+        .btn-primary { background-color: #0072C6; }
+        .btn-primary:hover { background-color: #005a9e; }
+        .btn-approve { background-color: #28a745; }
+        .btn-approve:hover { background-color: #218838; }
+        .btn-reject { background-color: #dc3545; }
+        .btn-reject:hover { background-color: #c82333; }
+        .email-template { border: 1px solid #EAEAEA; background-color: #FFF; padding: 20px; border-radius: 5px; }
     </style>
 </head>
 <body>
-
     <div class="container">
-        <h1>Homologação de Fornecedor: TRIPLE T SYS CONSULTORIA LTDA</h1>
-        <p><strong>Processo:</strong> #10542 &nbsp;&nbsp;&nbsp; <strong>Solicitante:</strong> Leonardo Fernandes</p>
-
+        <h1>Homologação de Fornecedor</h1>
+        
         <div class="stepper">
-            <div id="step-1" class="step active">
+            <div id="step-1" class="step">
                 <div class="step-icon">1</div>
-                <div class="step-label">Aprovação Gestor</div>
+                <div class="step-label">Convite Reunião</div>
             </div>
             <div id="step-2" class="step">
                 <div class="step-icon">2</div>
-                <div class="step-label">Coleta de Docs</div>
+                <div class="step-label">Decisão Pós-Reunião</div>
             </div>
             <div id="step-3" class="step">
-                <div class="step-icon">3</div>
-                <div class="step-label">Cadastro Protheus</div>
-            </div>
-            <div id="step-4" class="step">
-                <div class="step-icon">4</div>
-                <div class="step-label">Finalização</div>
+                <div class="step-icon">✓</div>
+                <div class="step-label">Processo Finalizado</div>
             </div>
         </div>
         
@@ -202,103 +95,105 @@
     </div>
 
     <script>
-        // Guarda o estado atual do processo
-        let etapaAtual = 1;
-
-        // Conteúdo de cada etapa (títulos, descrições e HTML dos botões)
-        const etapas = [
-            // Etapa 1 (índice 0)
-            {
-                titulo: "Etapa 1: Aprovação do Gestor da Área",
-                descricao: "Por favor, analise os valores propostos pelo fornecedor e aprove ou reprove a solicitação para darmos continuidade.",
-                conteudo: `
-                    <table class="value-table">
-                        <thead>
-                            <tr><th>DESCRIÇÃO ESPECIALIDADE</th><th>VALOR HORA BRUTO</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>TERCEIRO EM TI</td><td>R$ 113,00</td></tr>
-                            <tr><td>TERCEIRO FLUIG</td><td>R$ 118,50</td></tr>
-                            <tr><td>TERCEIRO SAÚDE</td><td>R$ 135,00</td></tr>
-                            <tr><td>TERCEIRO HOSPITALIDADE</td><td>R$ 124,00</td></tr>
-                        </tbody>
-                    </table>`,
-                botoes: `
-                    <button class="btn btn-reject">Reprovar</button>
-                    <button class="btn btn-approve" onclick="avancarEtapa()">Aprovar Proposta</button>`
-            },
-            // Etapa 2 (índice 1)
-            {
-                titulo: "Etapa 2: Coleta de Documentação",
-                descricao: "Envie o e-mail para a empresa solicitando a documentação necessária para o processo de homologação.",
-                conteudo: `<p>Ao clicar no botão abaixo, o sistema simulará o envio do e-mail padrão 'GESTÃO DE TERCEIROS' para o fornecedor.</p>`,
-                botoes: `<button class="btn btn-primary" onclick="avancarEtapa()">Enviar E-mail e Avançar</button>`
-            },
-            // Etapa 3 (índice 2)
-            {
-                titulo: "Etapa 3: Cadastro e Validação no Protheus",
-                descricao: "Realize os passos de cadastro do contrato no sistema Protheus e valide as informações.",
-                conteudo: `
-                    <ul class="checklist">
-                        <li>Realizar extração de relatório Protheus para verificar se o Contrato está cadastrado.</li>
-                        <li>Colocar informação na planilha de Status e Acompanhamento.</li>
-                        <li>Solicitar para a área de CSTT PMO Local, abrir ticket para cadastro de contrato.</li>
-                        <li>Validar no Protheus se contrato foi finalizado/cadastrado e gerar relatório.</li>
-                    </ul>`,
-                botoes: `<button class="btn btn-primary" onclick="avancarEtapa()">Concluir Cadastro e Avançar</button>`
-            },
-            // Etapa 4 (índice 3)
-            {
-                titulo: "Etapa 4: Finalização do Processo",
-                descricao: "O fornecedor foi homologado com sucesso! Execute os passos finais de comunicação e onboarding.",
-                conteudo: `
-                    <ul class="checklist">
-                        <li>Responder ticket do Jira finalizando o processo.</li>
-                        <li>Bate papo Onboarding.</li>
-                        <li>Enviar e-mail de Boas Vindas.</li>
-                    </ul>`,
-                botoes: `<button class="btn btn-approve" onclick="window.location.reload()">Processo Finalizado! (Reiniciar Protótipo)</button>`
+        // Função para atualizar a aparência da barra de progresso (stepper)
+        function atualizarStepper(etapa, status = 'active') {
+            // Limpa todos os status
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById(`step-${i}`).classList.remove('active', 'completed', 'rejected');
             }
-        ];
 
-        // Função para desenhar o conteúdo do card na tela
-        function renderizarCard(numeroEtapa) {
-            const container = document.getElementById('task-card-container');
-            const dadosEtapa = etapas[numeroEtapa - 1]; // Pega os dados do array (índice - 1)
-
-            container.innerHTML = `
-                <h2>${dadosEtapa.titulo}</h2>
-                <p>${dadosEtapa.descricao}</p>
-                ${dadosEtapa.conteudo}
-                <div class="action-buttons">
-                    ${dadosEtapa.botoes}
-                </div>
-            `;
-        }
-
-        // Função principal para avançar as etapas
-        function avancarEtapa() {
-            if (etapaAtual >= 4) return; // Não faz nada se já estiver na última etapa
-
-            // Atualiza a barra de progresso (stepper)
-            const passoAtualEl = document.getElementById(`step-${etapaAtual}`);
-            passoAtualEl.classList.remove('active');
-            passoAtualEl.classList.add('completed');
+            // Define o status da etapa atual e das anteriores
+            for (let i = 1; i < etapa; i++) {
+                 document.getElementById(`step-${i}`).classList.add('completed');
+            }
             
-            etapaAtual++; // Avança para a próxima etapa
-
-            const proximoPassoEl = document.getElementById(`step-${etapaAtual}`);
-            proximoPassoEl.classList.add('active');
-
-            // Renderiza o novo card com as informações da nova etapa
-            renderizarCard(etapaAtual);
+            const etapaAtualEl = document.getElementById(`step-${etapa}`);
+            if (etapaAtualEl) {
+                etapaAtualEl.classList.add(status);
+            }
         }
 
-        // Quando a página carregar pela primeira vez, renderiza o card da primeira etapa
-        document.addEventListener('DOMContentLoaded', () => {
-            renderizarCard(etapaAtual);
-        });
+        // Função para renderizar (desenhar) o conteúdo de cada etapa no card
+        function renderizarCard(etapa) {
+            const container = document.getElementById('task-card-container');
+            let conteudoHTML = '';
 
+            switch (etapa) {
+                case 1:
+                    atualizarStepper(1, 'active');
+                    conteudoHTML = `
+                        <h2>Etapa 1: Convidar Candidato para Reunião</h2>
+                        <p>Use o template abaixo para convidar o candidato. O botão de agendamento abrirá o link em uma nova aba.</p>
+                        <div class="email-template">
+                            <p><strong>Para:</strong> [E-mail do candidato]</p>
+                            <p><strong>Assunto:</strong> Convite: Bate-papo para Homologação de Prestador de Serviços</p>
+                            <div class="email-body">Olá Prezado(a),
+
+Desejamos bater um papo para explicar todos os processos para alocação e cadastro de recursos, pagamento, e processos da área de Gestão de Terceiros.
+
+Caso tenha outras pessoas da parte administrativa da Consultoria pode incluí-los.
+
+Aguardamos você!</div>
+                        </div>
+                        <div class="action-buttons">
+                            <a href="https://calendar.app.google/LmR3X7K9M1vz1WBbA" target="_blank" class="btn btn-primary">Agendamento Bate Papo Homologação</a>
+                            <button class="btn btn-approve" onclick="renderizarCard(2)">Confirmar Envio e Avançar</button>
+                        </div>`;
+                    break;
+                
+                case 2:
+                    atualizarStepper(2, 'active');
+                    conteudoHTML = `
+                        <h2>Etapa 2: Decisão Pós-Reunião</h2>
+                        <p>A reunião foi realizada. Com base na conversa e nos critérios da empresa, o candidato está apto para prosseguir com a homologação?</p>
+                        <div class="action-buttons">
+                            <button class="btn btn-reject" onclick="finalizarProcesso('recusado')">Recusado</button>
+                            <button class="btn btn-approve" onclick="finalizarProcesso('aprovado')">Aprovado</button>
+                        </div>`;
+                    break;
+                
+                case 3: // Estado final (aprovado ou recusado)
+                    // A lógica de finalização cuidará do conteúdo
+                    break;
+            }
+            container.innerHTML = conteudoHTML;
+        }
+
+        // Função para lidar com o final do processo
+        function finalizarProcesso(resultado) {
+            const container = document.getElementById('task-card-container');
+            let conteudoHTML = '';
+
+            if (resultado === 'aprovado') {
+                document.getElementById('step-2').classList.remove('active');
+                document.getElementById('step-2').classList.add('completed');
+                atualizarStepper(3, 'completed'); // Marcar finalizado como concluído (verde)
+
+                conteudoHTML = `
+                    <h2>Processo Finalizado: Aprovado</h2>
+                    <p>O candidato foi aprovado e está apto para a próxima fase do processo de homologação (coleta de documentos, etc).</p>
+                    <div class="action-buttons">
+                         <button class="btn btn-primary" onclick="renderizarCard(1)">Iniciar Novo Processo</button>
+                    </div>`;
+            } else { // resultado === 'recusado'
+                document.getElementById('step-2').classList.remove('active');
+                document.getElementById('step-2').classList.add('rejected'); // Marcar etapa 2 como recusada (vermelho)
+                atualizarStepper(3, 'rejected'); // Marcar finalizado como recusado (vermelho)
+
+                conteudoHTML = `
+                    <h2>Processo Finalizado: Recusado</h2>
+                    <p>O candidato não foi considerado apto para a homologação. O processo foi encerrado.</p>
+                     <div class="action-buttons">
+                         <button class="btn btn-primary" onclick="renderizarCard(1)">Iniciar Novo Processo</button>
+                    </div>`;
+            }
+            container.innerHTML = conteudoHTML;
+        }
+
+        // Inicia o protótipo na primeira etapa quando a página carrega
+        document.addEventListener('DOMContentLoaded', () => {
+            renderizarCard(1);
+        });
     </script>
 </body>
 </html>
