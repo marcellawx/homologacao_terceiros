@@ -72,9 +72,37 @@
             color: #555;
             font-style: italic;
         }
+        .doc-list { list-style: none; padding: 0; }
+        .doc-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #EEE; }
+        .doc-item span { flex-grow: 1; }
+        .upload-btn { font-size: 14px; padding: 8px 12px; }
+
+        /* --- NOVO: ESTILO PARA O PAINEL DE CONTROLE DE APRESENTAÇÃO --- */
+        .simulation-controls {
+            max-width: 900px;
+            margin: 0 auto 20px auto;
+            padding: 15px;
+            background-color: #FFF8E1;
+            border: 1px solid #FFECB3;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .simulation-controls p {
+            margin: 0 0 10px 0;
+            font-weight: bold;
+            color: #6D4C41;
+            font-size: 16px;
+        }
+        .simulation-controls .btn {
+            font-size: 14px;
+            padding: 8px 15px;
+            margin: 5px;
+        }
     </style>
 </head>
 <body>
+    <div id="simulation-panel" class="simulation-controls"></div>
+
     <div class="container">
         <h1>Visão Interna - Análise de Homologação</h1>
 
@@ -92,9 +120,8 @@
     <script>
         // ESTADO GLOBAL DO PROCESSO (compartilhado entre as duas visões)
         let processoState = {
-            // Iniciaremos na etapa de análise de documentos para demonstrar a funcionalidade
-            etapa: 'docAnalise', // boasVindas, docUpload, docAnalise, roleSelect, roleAnalise, contrato, finalizado
-            aprovadoInicial: true,
+            etapa: 'analiseInicial', // boasVindas, docUpload, docAnalise, roleSelect, roleAnalise, contrato, finalizado
+            aprovadoInicial: false,
             docs: {
                 cnpj: { status: 'uploaded', nome: 'Cartão do CNPJ' },
                 cnaes: { status: 'uploaded', nome: 'Comprovação de CNAEs Obrigatórios' },
@@ -113,11 +140,11 @@
         function renderVisaoInterna() {
             renderStepper();
             renderCardInterno();
+            renderSimulationPanel(); // NOVO: Renderiza o painel de controle
         }
 
         // --- FUNÇÕES DE RENDERIZAÇÃO (REAPROVEITADAS E NOVAS) ---
         function renderStepper() {
-            // A lógica do stepper é idêntica à visão externa, então pode ser reaproveitada
             const container = document.getElementById('stepper-container');
             const etapasCompletas = `
                 <div id="step-boasVindas" class="step"><div class="step-icon">1</div><div class="step-label">Análise Inicial</div></div>
@@ -180,7 +207,7 @@
                                 <textarea id="rejection-reason-docs" placeholder="Caso reprove, informe aqui de forma clara quais documentos precisam ser reenviados e o motivo. Ex: 'O Cartão CNPJ está com data de emissão superior a 30 dias.'"></textarea>
                                 <div class="action-buttons">
                                     <button class="btn btn-reject" onclick="reprovarDocs()">Reprovar com Ajustes</button>
-                                    <button class="btn btn-approve" onclick="setState({etapa: 'roleSelect'})">Aprovar Documentação</button>
+                                    <button class="btn btn-approve" onclick="setState({etapa: 'roleAnalise'})">Aprovar Documentação</button>
                                 </div>
                             </div>`;
                     break;
@@ -215,17 +242,36 @@
                     // Etapas que dependem de ação EXTERNA
                     html = `<div class="waiting-card">
                                 <p>Aguardando ação do fornecedor...</p>
-                                <small>Etapa atual do fornecedor: <strong>${processoState.etapa}</strong></small>
+                                <small>Neste momento, a tarefa está com o fornecedor na etapa: <strong>${processoState.etapa}</strong></small>
                             </div>`;
                     break;
             }
             container.innerHTML = html;
         }
 
+        // --- NOVO: FUNÇÃO PARA RENDERIZAR O PAINEL DE CONTROLE ---
+        function renderSimulationPanel() {
+            const container = document.getElementById('simulation-panel');
+            container.innerHTML = `
+                <p>Controles de Apresentação (Simulador)</p>
+                <button class="btn btn-secondary" onclick="simularEtapa('analiseInicial')">Ir para Análise Inicial</button>
+                <button class="btn btn-secondary" onclick="simularEtapa('docAnalise')">Ir para Análise de Docs</button>
+                <button class="btn btn-secondary" onclick="simularEtapa('roleAnalise')">Ir para Análise de Funções</button>
+                <button class="btn btn-secondary" onclick="simularEtapa('contrato')">Ir para Etapa Contrato</button>
+            `;
+        }
+
         // --- FUNÇÕES DE LÓGICA E AÇÕES INTERNAS ---
         function setState(newState) {
             processoState = { ...processoState, ...newState };
             renderVisaoInterna();
+        }
+        
+        // --- NOVO: FUNÇÃO PARA OS BOTÕES DE SIMULAÇÃO ---
+        function simularEtapa(etapaDesejada) {
+            // Esta função simplesmente força o estado para a etapa desejada,
+            // permitindo navegar livremente pelas telas de análise interna.
+            setState({ etapa: etapaDesejada });
         }
         
         function reprovarDocs() {
