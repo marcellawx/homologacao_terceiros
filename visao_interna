@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protótipo - VISÃO INTERNA - Análise de Homologação</title>
+    <style>
+        /* Estilos base (idênticos ao protótipo externo para consistência) */
+        :root {
+            --cor-primaria: #0072C6; --cor-sucesso: #28a745; --cor-perigo: #dc3545;
+            --cor-aviso: #FFC107; --cor-fundo: #F0F0F0; --cor-texto: #333;
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--cor-fundo); margin: 0; padding: 20px; color: var(--cor-texto); }
+        .container { max-width: 900px; margin: 20px auto; background-color: #FFF; padding: 25px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        h1, h2, h3 { color: var(--cor-primaria); }
+        h1 { border-bottom: 2px solid #EEE; padding-bottom: 10px; margin-top: 0; font-size: 24px; }
+        h2 { font-size: 20px; }
+        h3 { font-size: 18px; border-bottom: 1px solid #EEE; padding-bottom: 5px;}
+        p, li { line-height: 1.7; font-size: 16px; }
+        .stepper { display: flex; justify-content: space-between; margin: 30px 0; position: relative; }
+        .step { text-align: center; flex: 1; position: relative; font-size: 12px; }
+        .step-icon { width: 30px; height: 30px; border-radius: 50%; background-color: #CCC; color: white; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; border: 3px solid #CCC; transition: all 0.3s ease; }
+        .step-label { margin-top: 8px; color: #888; }
+        .step.active .step-icon { background-color: var(--cor-primaria); border-color: var(--cor-primaria); }
+        .step.active .step-label { color: var(--cor-primaria); font-weight: bold; }
+        .step.completed .step-icon { background-color: var(--cor-sucesso); border-color: var(--cor-sucesso); }
+        .step.completed .step-label { color: var(--cor-sucesso); }
+        .stepper::before { content: ''; position: absolute; top: 16px; left: 5%; right: 5%; height: 4px; background-color: #CCC; z-index: -1; }
+        .task-card { border: 1px solid #DDD; padding: 25px; border-radius: 8px; background-color: #FAFAFA; }
+        .action-buttons { margin-top: 30px; text-align: right; display: flex; justify-content: flex-end; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .btn { padding: 12px 25px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; text-decoration: none; display: inline-block; color: white; transition: background-color 0.3s ease; }
+        .btn-primary { background-color: var(--cor-primaria); }
+        .btn-approve { background-color: var(--cor-sucesso); }
+        .btn-reject { background-color: var(--cor-perigo); }
+        .btn-secondary { background-color: #6c757d; }
+        .roles-table { width: 100%; margin-top: 20px; border-collapse: collapse; }
+        .roles-table th, .roles-table td { padding: 12px; border: 1px solid #DDD; text-align: left; }
+        .roles-table th { background-color: #f2f2f2; }
+        
+        /* --- ESTILOS ADICIONAIS PARA A VISÃO INTERNA --- */
+        .fornecedor-info {
+            background-color: #E3F2FD;
+            border: 1px solid #BBDEFB;
+            border-left: 5px solid var(--cor-primaria);
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 5px;
+        }
+        .fornecedor-info p { margin: 5px 0; font-size: 15px; }
+        .review-panel {
+            border-top: 2px solid #EEE;
+            margin-top: 25px;
+            padding-top: 20px;
+        }
+        .review-panel textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: 1px solid #CCC;
+            min-height: 80px;
+            margin-bottom: 10px;
+            box-sizing: border-box; /* Garante que padding não afete a largura total */
+        }
+        .waiting-card {
+            text-align: center;
+            padding: 40px 20px;
+            background-color: #f9f9f9;
+        }
+        .waiting-card p {
+            font-size: 18px;
+            color: #555;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Visão Interna - Análise de Homologação</h1>
+
+        <div class="fornecedor-info">
+            <h3>Dados do Fornecedor</h3>
+            <p><strong>Nome/Razão Social:</strong> ACME Soluções de TI Ltda.</p>
+            <p><strong>CNPJ:</strong> 12.345.678/0001-99</p>
+            <p><strong>Contato:</strong> João da Silva - joao.silva@acme.com</p>
+        </div>
+
+        <div id="stepper-container"></div>
+        <div id="task-card-container" class="task-card"></div>
+    </div>
+
+    <script>
+        // ESTADO GLOBAL DO PROCESSO (compartilhado entre as duas visões)
+        let processoState = {
+            // Iniciaremos na etapa de análise de documentos para demonstrar a funcionalidade
+            etapa: 'docAnalise', // boasVindas, docUpload, docAnalise, roleSelect, roleAnalise, contrato, finalizado
+            aprovadoInicial: true,
+            docs: {
+                cnpj: { status: 'uploaded', nome: 'Cartão do CNPJ' },
+                cnaes: { status: 'uploaded', nome: 'Comprovação de CNAEs Obrigatórios' },
+                municipal: { status: 'uploaded', nome: 'Inscrição Municipal' },
+                social: { status: 'uploaded', nome: 'Contrato/Estatuto Social' },
+                legal: { status: 'uploaded', nome: 'Documento de Representantes Legais' },
+                fgts: { status: 'uploaded', nome: 'Certidão Negativa de FGTS' },
+                inss: { status: 'uploaded', nome: 'Certidão Negativa de INSS' },
+                cgu: { status: 'uploaded', nome: 'Certidões CEIS e CNEP (Portal da Transparência)' }
+            },
+            rolesSelecionadas: ["TERCEiro PROTHEUS", "TERCEIRO ADVPL", "TERCEIRO DBA"], // Simula funções já selecionadas
+            roleRejectionReason: ''
+        };
+        
+        // FUNÇÃO PRINCIPAL QUE RODA A CADA MUDANÇA
+        function renderVisaoInterna() {
+            renderStepper();
+            renderCardInterno();
+        }
+
+        // --- FUNÇÕES DE RENDERIZAÇÃO (REAPROVEITADAS E NOVAS) ---
+        function renderStepper() {
+            // A lógica do stepper é idêntica à visão externa, então pode ser reaproveitada
+            const container = document.getElementById('stepper-container');
+            const etapasCompletas = `
+                <div id="step-boasVindas" class="step"><div class="step-icon">1</div><div class="step-label">Análise Inicial</div></div>
+                <div id="step-docUpload" class="step"><div class="step-icon">2</div><div class="step-label">Documentação</div></div>
+                <div id="step-roleSelect" class="step"><div class="step-icon">3</div><div class="step-label">Funções</div></div>
+                <div id="step-contrato" class="step"><div class="step-icon">4</div><div class="step-label">Contrato</div></div>
+                <div id="step-finalizado" class="step"><div class="step-icon">✓</div><div class="step-label">Finalizado</div></div>
+            `;
+            container.innerHTML = etapasCompletas;
+            
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active', 'completed'));
+            let stepId;
+            if (processoState.etapa === 'analiseInicial' || processoState.etapa === 'recusadoInicial') stepId = 'step-boasVindas';
+            if (processoState.etapa.includes('doc')) stepId = 'step-docUpload';
+            if (processoState.etapa.includes('role')) stepId = 'step-roleSelect';
+            if (processoState.etapa === 'contrato') stepId = 'step-contrato';
+            if (processoState.etapa === 'finalizado') stepId = 'step-finalizado';
+
+            if(stepId) {
+                const el = document.getElementById(stepId);
+                el.classList.add('active');
+                let current = el.previousElementSibling;
+                while (current) {
+                    current.classList.add('completed');
+                    current = current.previousElementSibling;
+                }
+            }
+        }
+
+        function renderCardInterno() {
+            const container = document.getElementById('task-card-container');
+            let html = '';
+            
+            // Etapas que dependem de ação INTERNA
+            switch (processoState.etapa) {
+                case 'analiseInicial':
+                    html = `<h2>Análise Inicial</h2>
+                            <p>O fornecedor agendou a reunião inicial. Após a conversa, aprove ou recuse para dar continuidade.</p>
+                            <div class="review-panel">
+                                <div class="action-buttons">
+                                    <button class="btn btn-reject" onclick="setState({etapa: 'recusadoInicial'})">Recusar Fornecedor</button>
+                                    <button class="btn btn-approve" onclick="setState({etapa: 'docUpload', aprovadoInicial: true})">Aprovar e Solicitar Docs</button>
+                                </div>
+                            </div>`;
+                    break;
+
+                case 'docAnalise':
+                    let docListHtml = Object.keys(processoState.docs).map(key => {
+                        const doc = processoState.docs[key];
+                        return `<li class="doc-item">
+                                    <span>${doc.nome}</span>
+                                    <a href="#" class="btn btn-secondary upload-btn" onclick="alert('Visualizando ${doc.nome}...')">Visualizar</a>
+                                </li>`;
+                    }).join('');
+                    html = `<h2>Análise de Documentos</h2>
+                            <p>O fornecedor enviou os documentos abaixo. Por favor, verifique a validade e conformidade de cada um.</p>
+                            <ul class="doc-list">${docListHtml}</ul>
+                            <div class="review-panel">
+                                <h3>Decisão do Analista</h3>
+                                <textarea id="rejection-reason-docs" placeholder="Caso reprove, informe aqui de forma clara quais documentos precisam ser reenviados e o motivo. Ex: 'O Cartão CNPJ está com data de emissão superior a 30 dias.'"></textarea>
+                                <div class="action-buttons">
+                                    <button class="btn btn-reject" onclick="reprovarDocs()">Reprovar com Ajustes</button>
+                                    <button class="btn btn-approve" onclick="setState({etapa: 'roleSelect'})">Aprovar Documentação</button>
+                                </div>
+                            </div>`;
+                    break;
+
+                case 'roleAnalise':
+                    let rolesListHtml = processoState.rolesSelecionadas.map(role => `<li>${role}</li>`).join('');
+                    html = `<h2>Análise de Funções Solicitadas</h2>
+                            <p>O fornecedor selecionou as especialidades abaixo para inclusão em contrato. Valide com o gestor responsável.</p>
+                            <ul>${rolesListHtml.length > 0 ? rolesListHtml : '<li>Nenhuma função selecionada.</li>'}</ul>
+                             <div class="review-panel">
+                                <h3>Decisão do Gestor</h3>
+                                <textarea id="rejection-reason-roles" placeholder="Se alguma função não puder ser aprovada, explique o motivo aqui."></textarea>
+                                <div class="action-buttons">
+                                    <button class="btn btn-reject" onclick="reprovarRoles()">Reprovar com Ajustes</button>
+                                    <button class="btn btn-approve" onclick="setState({etapa: 'contrato'})">Aprovar Funções</button>
+                                </div>
+                            </div>`;
+                    break;
+                
+                case 'contrato':
+                     html = `<h2>Processamento de Contrato</h2>
+                            <p>As funções foram aprovadas. O contrato está com a área jurídica para elaboração e coleta de assinaturas.</p>
+                            <p><strong>Ação:</strong> Aguarde a confirmação da assinatura para finalizar o processo.</p>
+                             <div class="review-panel">
+                                <div class="action-buttons">
+                                    <button class="btn btn-approve" onclick="setState({etapa: 'finalizado'})">Confirmar Contrato Assinado</button>
+                                </div>
+                            </div>`;
+                    break;
+
+                default:
+                    // Etapas que dependem de ação EXTERNA
+                    html = `<div class="waiting-card">
+                                <p>Aguardando ação do fornecedor...</p>
+                                <small>Etapa atual do fornecedor: <strong>${processoState.etapa}</strong></small>
+                            </div>`;
+                    break;
+            }
+            container.innerHTML = html;
+        }
+
+        // --- FUNÇÕES DE LÓGICA E AÇÕES INTERNAS ---
+        function setState(newState) {
+            processoState = { ...processoState, ...newState };
+            renderVisaoInterna();
+        }
+        
+        function reprovarDocs() {
+            const motivo = document.getElementById('rejection-reason-docs').value;
+            if (!motivo) {
+                alert('Por favor, preencha o motivo da reprovação.');
+                return;
+            }
+            
+            // Simula a marcação de documentos como 'rejeitados' para o fornecedor ver
+            processoState.docs.cnpj.status = 'rejeitado';
+            processoState.docs.social.status = 'rejeitado';
+            
+            // Retorna o processo para a etapa de upload de documentos do fornecedor
+            setState({ etapa: 'docUpload' });
+            alert("Processo devolvido ao fornecedor com as seguintes pendências:\n\n" + motivo);
+        }
+        
+        function reprovarRoles() {
+            const motivo = document.getElementById('rejection-reason-roles').value;
+            if (!motivo) {
+                alert('Por favor, preencha o motivo da reprovação das funções.');
+                return;
+            }
+            
+            // Devolve ao fornecedor, passando o motivo da recusa
+            setState({ etapa: 'roleSelect', roleRejectionReason: motivo });
+             alert("Seleção de funções devolvida ao fornecedor com a justificativa.");
+        }
+
+        // Inicia o protótipo
+        document.addEventListener('DOMContentLoaded', renderVisaoInterna);
+    </script>
+</body>
+</html>
