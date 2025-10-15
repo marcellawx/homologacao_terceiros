@@ -99,7 +99,7 @@
             color: #555;
         }
 
-        /* --- CHECKLIST EXPANSÍVEL --- */
+        /* --- CHECKLIST EXPANSÍVEL (MODIFICADO) --- */
         .checklist-container {
             margin-top: 15px;
         }
@@ -116,16 +116,37 @@
         }
         .checklist li {
             font-size: 14px;
-            padding: 5px 0;
+            padding: 8px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .checklist li:last-child {
+            border-bottom: none;
+        }
+        .task-content {
             display: flex;
             align-items: center;
         }
         .checklist input[type="checkbox"] {
             margin-right: 10px;
+            flex-shrink: 0;
+        }
+        .checklist label {
+             line-height: 1.4;
         }
         .checklist label.completed {
             text-decoration: line-through;
             color: #888;
+        }
+        .checklist-date {
+            font-size: 12px;
+            color: #6c757d;
+            font-style: italic;
+            margin-left: 15px;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         /* --- BOTÕES E MODAL --- */
@@ -185,12 +206,26 @@
             status: "Pendente Análise",
             ultimaAtualizacao: "2025-10-14",
             checklists: {
+                // MODIFICADO: Checklist de Homologação atualizado com novos campos
                 "Homologação": [
-                    { tarefa: "Enviar convite ao fornecedor", concluida: true },
-                    { tarefa: "Realizar análise inicial", concluida: false },
-                    { tarefa: "Analisar documentação", concluida: false },
-                    { tarefa: "Validar funções com gestor", concluida: false },
-                    { tarefa: "Processar contrato", concluida: false }
+                    { tarefa: "BATE PAPO SOBRE HOMOLOGAÇÃO COM O FORNECEDOR", concluida: true, dataConclusao: "12/10/2025" },
+                    { tarefa: "E-mail com documentação para novo contrato de prestação de serviços", concluida: true, dataConclusao: "13/10/2025" },
+                    { tarefa: "Alimentar informações na planilha de Status e Acompanhamento das Homologações - RMO Terceiros", concluida: false, dataConclusao: null },
+                    { tarefa: "Validar documento assim que receber", concluida: false, dataConclusao: null },
+                    { tarefa: "Em caso de alteração de valor de função já existente enviar comunicado para o solicitante da Homologação validar", concluida: false, dataConclusao: null },
+                    { tarefa: "Se tiver função nova, validar com a Unidade que pediu a homologação se o valor está dentro do acordado", concluida: false, dataConclusao: null },
+                    { tarefa: "Aguardando aprovação dos valores e ou inclusão de mais função", concluida: false, dataConclusao: null },
+                    { tarefa: "Enviar e-mail para CST Contratos com Formulário, aprovação do gerente e documentação da empresa", concluida: false, dataConclusao: null },
+                    { tarefa: "Validar no Protheus se contrato foi finalizado (cadastrado) gerar relatório", concluida: false, dataConclusao: null },
+                    { tarefa: "Colocar as informações em nossa planilha na aba Fornecedores e na aba VALOR HORA", concluida: false, dataConclusao: null },
+                    { tarefa: "Colocar informação do Fornecedor no Fluig para Proposta de exceção", concluida: false, dataConclusao: null },
+                    { tarefa: "Enviar e-mail de Boas Vindas", concluida: false, dataConclusao: null },
+                    { tarefa: "Solicitar para a área de CST PMO Local, abrir ticket para cadastro de contrato do fornecedor no Horacius", concluida: false, dataConclusao: null },
+                    { tarefa: "Bate papo Onboarding", concluida: false, dataConclusao: null },
+                    { tarefa: "Coloca informação na planilha de Status e Acompanhamento das Homologações.", concluida: false, dataConclusao: null },
+                    { tarefa: "Responder ticket do Zendesk finalizando o processo e avisando a área.", concluida: false, dataConclusao: null },
+                    { tarefa: "Confirmar se preencheram formulário para receber o selo", concluida: false, dataConclusao: null },
+                    { tarefa: "Disponibilizar o selo partners para fornecedores SELIND", concluida: false, dataConclusao: null }
                 ]
             },
             historico: [
@@ -207,11 +242,11 @@
             ultimaAtualizacao: "2025-10-15",
              checklists: {
                 "Reajuste": [
-                    { tarefa: "Receber solicitação de reajuste", concluida: true },
-                    { tarefa: "Analisar índice e contrato", concluida: true },
-                    { tarefa: "Coletar aprovação interna", concluida: false },
-                    { tarefa: "Gerar aditivo de valor", concluida: false },
-                    { tarefa: "Coletar assinaturas", concluida: false }
+                    { tarefa: "Receber solicitação de reajuste", concluida: true, dataConclusao: "12/10/2025" },
+                    { tarefa: "Analisar índice e contrato", concluida: true, dataConclusao: "15/10/2025" },
+                    { tarefa: "Coletar aprovação interna", concluida: false, dataConclusao: null },
+                    { tarefa: "Gerar aditivo de valor", concluida: false, dataConclusao: null },
+                    { tarefa: "Coletar assinaturas", concluida: false, dataConclusao: null }
                 ]
             },
             historico: [
@@ -226,38 +261,10 @@
             tipoContrato: "Consultoria",
             status: "Aguardando Terceiros",
             ultimaAtualizacao: "2025-10-10",
-            checklists: {
-                "Homologação": [
-                    { tarefa: "Enviar convite ao fornecedor", concluida: true },
-                    { tarefa: "Realizar análise inicial", concluida: true },
-                    { tarefa: "Analisar documentação", concluida: false },
-                    { tarefa: "Validar funções com gestor", concluida: false },
-                    { tarefa: "Processar contrato", concluida: false }
-                ]
-            },
+            checklists: { "Homologação": [ { tarefa: "Validar documento assim que receber", concluida: false, dataConclusao: null }, { tarefa: "Alimentar informações na planilha...", concluida: true, dataConclusao: "10/10/2025" }] },
             historico: [
                 { data: "2025-10-10", evento: "Pendências na documentação enviadas ao fornecedor." },
-                { data: "2025-10-09", evento: "Análise de documentos iniciada." },
-                { data: "2025-10-07", evento: "Convite de homologação enviado." }
-            ]
-        },
-         {
-            id: 104,
-            empresa: "Órbita Digital",
-            processo: "Aditivo",
-            tipoContrato: "Prestação de Serviços",
-            status: "Pendente Análise",
-            ultimaAtualizacao: "2025-10-15",
-             checklists: {
-                "Aditivo": [
-                    { tarefa: "Receber solicitação de aditivo", concluida: true },
-                    { tarefa: "Analisar escopo e cláusulas", concluida: false },
-                    { tarefa: "Validar com área jurídica", concluida: false },
-                    { tarefa: "Gerar minuta do aditivo", concluida: false }
-                ]
-            },
-            historico: [
-                { data: "2025-10-15", evento: "Gestor interno solicitou aditivo para inclusão de nova função." }
+                { data: "2025-10-09", evento: "Análise de documentos iniciada." }
             ]
         },
         {
@@ -267,25 +274,13 @@
             tipoContrato: "Consultoria",
             status: "Concluído",
             ultimaAtualizacao: "2025-09-30",
-            checklists: {
-                "Desomologação": [
-                    { tarefa: "Receber solicitação de encerramento", concluida: true },
-                    { tarefa: "Verificar pendências financeiras", concluida: true },
-                    { tarefa: "Comunicar áreas internas", concluida: true },
-                    { tarefa: "Formalizar distrato", concluida: true }
-                ]
-            },
-            historico: [
-                { data: "2025-09-30", evento: "Processo de desomologação finalizado." },
-                { data: "2025-09-25", evento: "Distrato assinado por ambas as partes." },
-                { data: "2025-09-15", evento: "Solicitação de encerramento de contrato recebida." }
-            ]
+            checklists: { "Desomologação": [ { tarefa: "Formalizar distrato", concluida: true, dataConclusao: "30/09/2025" } ]},
+            historico: [ { data: "2025-09-30", evento: "Processo de desomologação finalizado." }]
         }
     ];
 
     // --- FUNÇÕES DE RENDERIZAÇÃO DO KANBAN ---
     
-    // Mapeamento de status para IDs das colunas
     const colunas = {
         "Pendente Análise": { id: "col-pendente", titulo: "Pendente Análise" },
         "Em Andamento": { id: "col-andamento", titulo: "Em Andamento" },
@@ -297,7 +292,6 @@
         const board = document.getElementById('kanban-board');
         board.innerHTML = '';
 
-        // Cria as colunas
         for (const status in colunas) {
             const colunaInfo = colunas[status];
             const count = mockProcessos.filter(p => p.status === status).length;
@@ -308,11 +302,12 @@
             `;
         }
         
-        // Distribui os cards nas colunas
         mockProcessos.forEach(processo => {
             const colunaId = colunas[processo.status].id;
             const colunaEl = document.getElementById(colunaId);
-            colunaEl.innerHTML += createCardHtml(processo);
+            if (colunaEl) {
+                colunaEl.innerHTML += createCardHtml(processo);
+            }
         });
         
         addChecklistListeners();
@@ -322,12 +317,21 @@
         const processoSlug = processo.processo.toLowerCase().replace('ç', 'c');
         const checklist = processo.checklists[processo.processo] || [];
         
-        let checklistHtml = checklist.map((item, index) => `
-            <li>
-                <input type="checkbox" id="task-${processo.id}-${index}" ${item.concluida ? 'checked' : ''}>
-                <label for="task-${processo.id}-${index}" class="${item.concluida ? 'completed' : ''}">${item.tarefa}</label>
-            </li>
-        `).join('');
+        let checklistHtml = checklist.map((item, index) => {
+            // MODIFICADO: Adiciona data-* attributes para identificar a tarefa e o elemento da data
+            const dataConclusao = item.concluida && item.dataConclusao ? item.dataConclusao : '';
+            return `
+                <li>
+                    <div class="task-content">
+                        <input type="checkbox" id="task-${processo.id}-${index}" 
+                               data-processo-id="${processo.id}" data-task-index="${index}" 
+                               ${item.concluida ? 'checked' : ''}>
+                        <label for="task-${processo.id}-${index}" class="${item.concluida ? 'completed' : ''}">${item.tarefa}</label>
+                    </div>
+                    <small class="checklist-date">${dataConclusao}</small>
+                </li>
+            `;
+        }).join('');
 
         return `
             <div class="kanban-card" style="border-left-color: var(--cor-${processoSlug === 'reajuste' ? 'aviso' : processoSlug === 'aditivo' ? 'info' : processoSlug === 'desomologacao' ? 'perigo' : 'primaria'});">
@@ -373,11 +377,32 @@
         modal.style.display = "none";
     }
 
+    // MODIFICADO: Função atualizada para incluir a lógica de data
     function addChecklistListeners() {
         document.querySelectorAll('.checklist input[type="checkbox"]').forEach(checkbox => {
             checkbox.addEventListener('change', function() {
-                const label = this.nextElementSibling;
-                label.classList.toggle('completed', this.checked);
+                const label = this.closest('li').querySelector('label');
+                const dateEl = this.closest('li').querySelector('.checklist-date');
+                const processoId = parseInt(this.dataset.processoId);
+                const taskIndex = parseInt(this.dataset.taskIndex);
+                
+                const processo = mockProcessos.find(p => p.id === processoId);
+                if (!processo) return;
+                
+                const tarefa = processo.checklists[processo.processo][taskIndex];
+
+                if (this.checked) {
+                    const hoje = new Date().toLocaleDateString('pt-BR');
+                    tarefa.concluida = true;
+                    tarefa.dataConclusao = hoje;
+                    label.classList.add('completed');
+                    dateEl.textContent = hoje;
+                } else {
+                    tarefa.concluida = false;
+                    tarefa.dataConclusao = null;
+                    label.classList.remove('completed');
+                    dateEl.textContent = '';
+                }
             });
         });
     }
