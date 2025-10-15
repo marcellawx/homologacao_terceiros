@@ -98,8 +98,17 @@
             margin: 5px 0;
             color: #555;
         }
+        /* NOVO: Estilo para o link do Zendesk */
+        .card-body a {
+            color: var(--cor-primaria);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .card-body a:hover {
+            text-decoration: underline;
+        }
 
-        /* --- CHECKLIST EXPANSÍVEL (MODIFICADO) --- */
+        /* --- CHECKLIST EXPANSÍVEL --- */
         .checklist-container {
             margin-top: 15px;
         }
@@ -205,8 +214,8 @@
             tipoContrato: "Consultoria",
             status: "Pendente Análise",
             ultimaAtualizacao: "2025-10-14",
+            zendeskTicket: 87345, // NOVO CAMPO
             checklists: {
-                // MODIFICADO: Checklist de Homologação atualizado com novos campos
                 "Homologação": [
                     { tarefa: "BATE PAPO SOBRE HOMOLOGAÇÃO COM O FORNECEDOR", concluida: true, dataConclusao: "12/10/2025" },
                     { tarefa: "E-mail com documentação para novo contrato de prestação de serviços", concluida: true, dataConclusao: "13/10/2025" },
@@ -240,6 +249,7 @@
             tipoContrato: "Prestação de Serviços",
             status: "Em Andamento",
             ultimaAtualizacao: "2025-10-15",
+            zendeskTicket: 22518, // NOVO CAMPO
              checklists: {
                 "Reajuste": [
                     { tarefa: "Receber solicitação de reajuste", concluida: true, dataConclusao: "12/10/2025" },
@@ -261,6 +271,7 @@
             tipoContrato: "Consultoria",
             status: "Aguardando Terceiros",
             ultimaAtualizacao: "2025-10-10",
+            zendeskTicket: 91023, // NOVO CAMPO
             checklists: { "Homologação": [ { tarefa: "Validar documento assim que receber", concluida: false, dataConclusao: null }, { tarefa: "Alimentar informações na planilha...", concluida: true, dataConclusao: "10/10/2025" }] },
             historico: [
                 { data: "2025-10-10", evento: "Pendências na documentação enviadas ao fornecedor." },
@@ -274,6 +285,7 @@
             tipoContrato: "Consultoria",
             status: "Concluído",
             ultimaAtualizacao: "2025-09-30",
+            zendeskTicket: 48859, // NOVO CAMPO
             checklists: { "Desomologação": [ { tarefa: "Formalizar distrato", concluida: true, dataConclusao: "30/09/2025" } ]},
             historico: [ { data: "2025-09-30", evento: "Processo de desomologação finalizado." }]
         }
@@ -318,7 +330,6 @@
         const checklist = processo.checklists[processo.processo] || [];
         
         let checklistHtml = checklist.map((item, index) => {
-            // MODIFICADO: Adiciona data-* attributes para identificar a tarefa e o elemento da data
             const dataConclusao = item.concluida && item.dataConclusao ? item.dataConclusao : '';
             return `
                 <li>
@@ -333,6 +344,7 @@
             `;
         }).join('');
 
+        // MODIFICADO: Adicionada a linha do Zendesk
         return `
             <div class="kanban-card" style="border-left-color: var(--cor-${processoSlug === 'reajuste' ? 'aviso' : processoSlug === 'aditivo' ? 'info' : processoSlug === 'desomologacao' ? 'perigo' : 'primaria'});">
                 <div class="card-header">
@@ -341,6 +353,7 @@
                 </div>
                 <div class="card-body">
                     <p><strong>Contrato:</strong> ${processo.tipoContrato}</p>
+                    <p><strong>Zendesk:</strong> <a href="https://suaempresa.zendesk.com/agent/tickets/${processo.zendeskTicket}" target="_blank">Ticket #${processo.zendeskTicket}</a></p>
                     <p><strong>Última Atividade:</strong> ${new Date(processo.ultimaAtualizacao + 'T12:00:00').toLocaleDateString('pt-BR')}</p>
                 </div>
                 <details class="checklist-container">
@@ -377,7 +390,6 @@
         modal.style.display = "none";
     }
 
-    // MODIFICADO: Função atualizada para incluir a lógica de data
     function addChecklistListeners() {
         document.querySelectorAll('.checklist input[type="checkbox"]').forEach(checkbox => {
             checkbox.addEventListener('change', function() {
