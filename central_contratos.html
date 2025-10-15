@@ -1,1 +1,395 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protótipo - Central de Contratos de Terceiros</title>
+    <style>
+        /* --- ESTILOS GLOBAIS E VARIÁVEIS (Reaproveitados) --- */
+        :root {
+            --cor-primaria: #0072C6;
+            --cor-sucesso: #28a745;
+            --cor-perigo: #dc3545;
+            --cor-aviso: #FFC107;
+            --cor-info: #6f42c1; /* Roxo para Aditivo */
+            --cor-fundo: #F4F7FC;
+            --cor-fundo-coluna: #E9ECEF;
+            --cor-texto: #333;
+            --cor-borda: #DEE2E6;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--cor-fundo);
+            margin: 0;
+            padding: 25px;
+            color: var(--cor-texto);
+        }
+        h1 {
+            color: var(--cor-primaria);
+            text-align: center;
+            margin-bottom: 30px;
+        }
 
+        /* --- LAYOUT DO KANBAN --- */
+        .kanban-board {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto; /* Permite rolar horizontalmente se não couber */
+            padding-bottom: 20px;
+        }
+        .kanban-column {
+            flex: 1;
+            min-width: 320px;
+            background-color: var(--cor-fundo-coluna);
+            border-radius: 8px;
+            padding: 15px;
+        }
+        .kanban-column h2 {
+            font-size: 18px;
+            margin: 0 0 15px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--cor-borda);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .task-count {
+            background-color: #ced4da;
+            color: #495057;
+            border-radius: 12px;
+            padding: 2px 10px;
+            font-size: 14px;
+        }
+
+        /* --- ESTILO DOS CARDS --- */
+        .kanban-card {
+            background-color: #FFF;
+            padding: 15px;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+            border-left: 5px solid; /* A cor será definida pela classe do processo */
+            margin-bottom: 15px;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .card-header h3 {
+            font-size: 16px;
+            margin: 0;
+            color: var(--cor-texto);
+        }
+        .badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+        }
+        .badge.homologacao { background-color: var(--cor-primaria); }
+        .badge.reajuste { background-color: var(--cor-aviso); color: #333; }
+        .badge.aditivo { background-color: var(--cor-info); }
+        .badge.desomologacao { background-color: var(--cor-perigo); }
+
+        .card-body p {
+            font-size: 14px;
+            margin: 5px 0;
+            color: #555;
+        }
+
+        /* --- CHECKLIST EXPANSÍVEL --- */
+        .checklist-container {
+            margin-top: 15px;
+        }
+        .checklist-container summary {
+            cursor: pointer;
+            font-weight: bold;
+            color: var(--cor-primaria);
+            font-size: 14px;
+        }
+        .checklist {
+            list-style: none;
+            padding: 10px 0 0 5px;
+            margin: 0;
+        }
+        .checklist li {
+            font-size: 14px;
+            padding: 5px 0;
+            display: flex;
+            align-items: center;
+        }
+        .checklist input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        .checklist label.completed {
+            text-decoration: line-through;
+            color: #888;
+        }
+
+        /* --- BOTÕES E MODAL --- */
+        .card-footer {
+            margin-top: 15px;
+            text-align: right;
+        }
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            color: white;
+            background-color: var(--cor-primaria);
+        }
+        .modal {
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0;
+            width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: #fefefe; margin: 10% auto; padding: 25px;
+            border: 1px solid #888; width: 80%; max-width: 600px; border-radius: 8px;
+        }
+        .close-btn { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+        .timeline { list-style-type: none; padding-left: 20px; border-left: 2px solid var(--cor-primaria); }
+        .timeline li { margin-bottom: 15px; position: relative; }
+        .timeline li::before { content: '●'; color: var(--cor-primaria); position: absolute; left: -28px; top: 0px; font-size: 18px; }
+        .timeline .date { font-weight: bold; display: block; color: #555; }
+    </style>
+</head>
+<body>
+
+    <h1>Central de Contratos de Terceiros</h1>
+
+    <main class="kanban-board" id="kanban-board">
+        </main>
+
+    <div id="history-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2 id="modal-title">Histórico do Processo</h2>
+            <ul id="modal-timeline" class="timeline">
+                </ul>
+        </div>
+    </div>
+
+
+    <script>
+    // --- BANCO DE DADOS FALSO (MOCK) PARA O PROTÓTIPO ---
+    const mockProcessos = [
+        {
+            id: 101,
+            empresa: "ACME Soluções de TI",
+            processo: "Homologação",
+            tipoContrato: "Consultoria",
+            status: "Pendente Análise",
+            ultimaAtualizacao: "2025-10-14",
+            checklists: {
+                "Homologação": [
+                    { tarefa: "Enviar convite ao fornecedor", concluida: true },
+                    { tarefa: "Realizar análise inicial", concluida: false },
+                    { tarefa: "Analisar documentação", concluida: false },
+                    { tarefa: "Validar funções com gestor", concluida: false },
+                    { tarefa: "Processar contrato", concluida: false }
+                ]
+            },
+            historico: [
+                { data: "2025-10-14", evento: "Fornecedor agendou reunião inicial." },
+                { data: "2025-10-13", evento: "Convite de homologação enviado." }
+            ]
+        },
+        {
+            id: 102,
+            empresa: "Nexus Inovações",
+            processo: "Reajuste",
+            tipoContrato: "Prestação de Serviços",
+            status: "Em Andamento",
+            ultimaAtualizacao: "2025-10-15",
+             checklists: {
+                "Reajuste": [
+                    { tarefa: "Receber solicitação de reajuste", concluida: true },
+                    { tarefa: "Analisar índice e contrato", concluida: true },
+                    { tarefa: "Coletar aprovação interna", concluida: false },
+                    { tarefa: "Gerar aditivo de valor", concluida: false },
+                    { tarefa: "Coletar assinaturas", concluida: false }
+                ]
+            },
+            historico: [
+                { data: "2025-10-15", evento: "Análise do índice contratual concluída." },
+                { data: "2025-10-12", evento: "Fornecedor solicitou reajuste anual." }
+            ]
+        },
+        {
+            id: 103,
+            empresa: "Quantum Tech",
+            processo: "Homologação",
+            tipoContrato: "Consultoria",
+            status: "Aguardando Terceiros",
+            ultimaAtualizacao: "2025-10-10",
+            checklists: {
+                "Homologação": [
+                    { tarefa: "Enviar convite ao fornecedor", concluida: true },
+                    { tarefa: "Realizar análise inicial", concluida: true },
+                    { tarefa: "Analisar documentação", concluida: false },
+                    { tarefa: "Validar funções com gestor", concluida: false },
+                    { tarefa: "Processar contrato", concluida: false }
+                ]
+            },
+            historico: [
+                { data: "2025-10-10", evento: "Pendências na documentação enviadas ao fornecedor." },
+                { data: "2025-10-09", evento: "Análise de documentos iniciada." },
+                { data: "2025-10-07", evento: "Convite de homologação enviado." }
+            ]
+        },
+         {
+            id: 104,
+            empresa: "Órbita Digital",
+            processo: "Aditivo",
+            tipoContrato: "Prestação de Serviços",
+            status: "Pendente Análise",
+            ultimaAtualizacao: "2025-10-15",
+             checklists: {
+                "Aditivo": [
+                    { tarefa: "Receber solicitação de aditivo", concluida: true },
+                    { tarefa: "Analisar escopo e cláusulas", concluida: false },
+                    { tarefa: "Validar com área jurídica", concluida: false },
+                    { tarefa: "Gerar minuta do aditivo", concluida: false }
+                ]
+            },
+            historico: [
+                { data: "2025-10-15", evento: "Gestor interno solicitou aditivo para inclusão de nova função." }
+            ]
+        },
+        {
+            id: 105,
+            empresa: "LogiSystem",
+            processo: "Desomologação",
+            tipoContrato: "Consultoria",
+            status: "Concluído",
+            ultimaAtualizacao: "2025-09-30",
+            checklists: {
+                "Desomologação": [
+                    { tarefa: "Receber solicitação de encerramento", concluida: true },
+                    { tarefa: "Verificar pendências financeiras", concluida: true },
+                    { tarefa: "Comunicar áreas internas", concluida: true },
+                    { tarefa: "Formalizar distrato", concluida: true }
+                ]
+            },
+            historico: [
+                { data: "2025-09-30", evento: "Processo de desomologação finalizado." },
+                { data: "2025-09-25", evento: "Distrato assinado por ambas as partes." },
+                { data: "2025-09-15", evento: "Solicitação de encerramento de contrato recebida." }
+            ]
+        }
+    ];
+
+    // --- FUNÇÕES DE RENDERIZAÇÃO DO KANBAN ---
+    
+    // Mapeamento de status para IDs das colunas
+    const colunas = {
+        "Pendente Análise": { id: "col-pendente", titulo: "Pendente Análise" },
+        "Em Andamento": { id: "col-andamento", titulo: "Em Andamento" },
+        "Aguardando Terceiros": { id: "col-aguardando", titulo: "Aguardando Terceiros" },
+        "Concluído": { id: "col-concluido", titulo: "Concluído" }
+    };
+
+    function renderBoard() {
+        const board = document.getElementById('kanban-board');
+        board.innerHTML = '';
+
+        // Cria as colunas
+        for (const status in colunas) {
+            const colunaInfo = colunas[status];
+            const count = mockProcessos.filter(p => p.status === status).length;
+            board.innerHTML += `
+                <div class="kanban-column" id="${colunaInfo.id}">
+                    <h2>${colunaInfo.titulo} <span class="task-count">${count}</span></h2>
+                </div>
+            `;
+        }
+        
+        // Distribui os cards nas colunas
+        mockProcessos.forEach(processo => {
+            const colunaId = colunas[processo.status].id;
+            const colunaEl = document.getElementById(colunaId);
+            colunaEl.innerHTML += createCardHtml(processo);
+        });
+        
+        addChecklistListeners();
+    }
+
+    function createCardHtml(processo) {
+        const processoSlug = processo.processo.toLowerCase().replace('ç', 'c');
+        const checklist = processo.checklists[processo.processo] || [];
+        
+        let checklistHtml = checklist.map((item, index) => `
+            <li>
+                <input type="checkbox" id="task-${processo.id}-${index}" ${item.concluida ? 'checked' : ''}>
+                <label for="task-${processo.id}-${index}" class="${item.concluida ? 'completed' : ''}">${item.tarefa}</label>
+            </li>
+        `).join('');
+
+        return `
+            <div class="kanban-card" style="border-left-color: var(--cor-${processoSlug === 'reajuste' ? 'aviso' : processoSlug === 'aditivo' ? 'info' : processoSlug === 'desomologacao' ? 'perigo' : 'primaria'});">
+                <div class="card-header">
+                    <h3>${processo.empresa}</h3>
+                    <span class="badge ${processoSlug}">${processo.processo}</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>Contrato:</strong> ${processo.tipoContrato}</p>
+                    <p><strong>Última Atividade:</strong> ${new Date(processo.ultimaAtualizacao + 'T12:00:00').toLocaleDateString('pt-BR')}</p>
+                </div>
+                <details class="checklist-container">
+                    <summary>Ver Checklist de Afazeres</summary>
+                    <ul class="checklist">${checklistHtml}</ul>
+                </details>
+                <div class="card-footer">
+                    <button class="btn" onclick="openHistoryModal(${processo.id})">Ver Histórico</button>
+                </div>
+            </div>
+        `;
+    }
+
+    // --- FUNÇÕES DE INTERATIVIDADE (MODAL, CHECKLISTS) ---
+    const modal = document.getElementById('history-modal');
+
+    function openHistoryModal(processoId) {
+        const processo = mockProcessos.find(p => p.id === processoId);
+        if (!processo) return;
+
+        document.getElementById('modal-title').textContent = `Histórico: ${processo.empresa} - ${processo.processo}`;
+        const timelineEl = document.getElementById('modal-timeline');
+        timelineEl.innerHTML = processo.historico.map(item => `
+            <li>
+                <span class="date">${new Date(item.data + 'T12:00:00').toLocaleDateString('pt-BR')}</span>
+                <p>${item.evento}</p>
+            </li>
+        `).join('');
+        
+        modal.style.display = "block";
+    }
+
+    function closeModal() {
+        modal.style.display = "none";
+    }
+
+    function addChecklistListeners() {
+        document.querySelectorAll('.checklist input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const label = this.nextElementSibling;
+                label.classList.toggle('completed', this.checked);
+            });
+        });
+    }
+    
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            closeModal();
+        }
+    }
+
+    // --- INICIA O PROTÓTIPO ---
+    document.addEventListener('DOMContentLoaded', renderBoard);
+    </script>
+</body>
+</html>
