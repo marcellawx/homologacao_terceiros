@@ -55,10 +55,13 @@
         .checklist-container summary { cursor: pointer; font-weight: bold; color: var(--cor-primaria); font-size: 14px; }
         .checklist { list-style: none; padding: 10px 0 0 5px; margin: 0; }
         .checklist li { font-size: 14px; padding: 8px 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f0f0f0; }
+        .checklist li:last-child { border-bottom: none; }
         .task-content { display: flex; align-items: center; }
         .checklist input[type="checkbox"] { margin-right: 10px; flex-shrink: 0; }
         .checklist label.completed { text-decoration: line-through; color: #888; }
         .checklist-date { font-size: 12px; color: #6c757d; font-style: italic; margin-left: 15px; white-space: nowrap; flex-shrink: 0; }
+        .card-footer { margin-top: 15px; text-align: right; }
+        .btn { padding: 8px 15px; border: none; border-radius: 5px; font-size: 14px; cursor: pointer; color: white; background-color: var(--cor-primaria);}
 
         /* --- VISÃO DE REAJUSTE --- */
         .reajuste-list { list-style: none; padding: 0; }
@@ -159,7 +162,6 @@
 
     <script>
     // --- BANCO DE DADOS FALSO (MOCK) ---
-    // Adicionei os novos campos para o formulário de storytelling e a data de homologação
     const mockProcessos = [
         {
             id: 101, empresa: "ACME Soluções de TI", processo: "Homologação", tipoContrato: "Consultoria", status: "Pendente Análise", ultimaAtualizacao: "2025-10-14", zendeskTicket: 87345,
@@ -172,7 +174,7 @@
         },
         {
             id: 102, empresa: "Nexus Inovações", processo: "Reajuste", tipoContrato: "Prestação de Serviços", status: "Em Andamento", ultimaAtualizacao: "2025-10-15", zendeskTicket: 22518,
-            dataHomologacao: "2023-12-05",
+            dataHomologacao: "2024-12-05",
             storytelling: { codigo: 100315, cnpj: "98.765.432/0001-11", estado: "RJ", numeroContrato: "CTR-2023-0874", ehCanal: "Sim", elegivelSelo: "Sim" },
             checklists: { "Reajuste": [ { tarefa: "Receber solicitação de reajuste", concluida: true, dataConclusao: "12/10/2025" } ] },
             historico: [ { data: "2025-10-15", evento: "Análise do índice contratual concluída." } ]
@@ -260,8 +262,26 @@
         addChecklistListeners();
     }
 
+    // CORRIGIDO: Esta função foi reescrita para incluir os elementos que faltavam.
     function createCardHtml(processo) {
         const processoSlug = processo.processo.toLowerCase().replace('ç', 'c');
+        const checklist = processo.checklists[processo.processo] || [];
+        
+        let checklistHtml = checklist.map((item, index) => {
+            const dataConclusao = item.concluida && item.dataConclusao ? item.dataConclusao : '';
+            return `
+                <li>
+                    <div class="task-content">
+                        <input type="checkbox" id="task-${processo.id}-${index}" 
+                               data-processo-id="${processo.id}" data-task-index="${index}" 
+                               ${item.concluida ? 'checked' : ''}>
+                        <label for="task-${processo.id}-${index}" class="${item.concluida ? 'completed' : ''}">${item.tarefa}</label>
+                    </div>
+                    <small class="checklist-date">${dataConclusao}</small>
+                </li>
+            `;
+        }).join('');
+
         return `
             <div class="kanban-card" style="border-left-color: var(--cor-${processoSlug === 'reajuste' ? 'aviso' : processoSlug === 'aditivo' ? 'info' : processoSlug === 'desomologacao' ? 'perigo' : 'primaria'});">
                 <div class="card-header">
@@ -272,10 +292,15 @@
                     <p><strong>Zendesk:</strong> <a href="#" target="_blank">Ticket #${processo.zendeskTicket}</a></p>
                     <p><strong>Última Atividade:</strong> ${new Date(processo.ultimaAtualizacao + 'T12:00:00Z').toLocaleDateString('pt-BR')}</p>
                 </div>
+                <details class="checklist-container">
+                    <summary>Ver Checklist de Afazeres</summary>
+                    <ul class="checklist">${checklistHtml}</ul>
+                </details>
                 <div class="card-footer">
                     <button class="btn" onclick="openHistoryModal(${processo.id})">Ver Histórico</button>
                 </div>
-            </div>`;
+            </div>
+        `;
     }
 
     // --- LÓGICA DA ABA DE REAJUSTE ---
@@ -285,7 +310,7 @@
         const hoje = new Date();
 
         mockProcessos
-            .filter(p => p.dataHomologacao) // Apenas os que têm data
+            .filter(p => p.dataHomologacao) 
             .sort((a,b) => new Date(a.dataHomologacao) - new Date(b.dataHomologacao))
             .forEach(p => {
                 const dataHomologacao = new Date(p.dataHomologacao + 'T12:00:00Z');
@@ -316,7 +341,6 @@
 
     // --- LÓGICA DOS MODAIS E INTERATIVIDADE ---
     function openHistoryModal(processoId) {
-        // ... (código do histórico continua o mesmo) ...
         const processo = mockProcessos.find(p => p.id === processoId);
         if (processo) {
             document.getElementById('modal-title').textContent = `Histórico: ${processo.empresa}`;
@@ -332,7 +356,6 @@
         const s = processo.storytelling;
         document.getElementById('storytelling-title').textContent = `Detalhes de ${processo.empresa}`;
         
-        // Preenche o formulário
         document.getElementById('st-fornecedor').value = processo.empresa || '';
         document.getElementById('st-codigo').value = s.codigo || '';
         document.getElementById('st-cnpj').value = s.cnpj || '';
@@ -362,13 +385,43 @@
         document.getElementById(modalId).style.display = 'none';
     }
     
-    // (A função addChecklistListeners e o restante continuam iguais)
-    function addChecklistListeners() { /* ...código idêntico ao anterior... */ }
+    function addChecklistListeners() {
+        document.querySelectorAll('.checklist input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const label = this.closest('li').querySelector('label');
+                const dateEl = this.closest('li').querySelector('.checklist-date');
+                const processoId = parseInt(this.dataset.processoId);
+                const taskIndex = parseInt(this.dataset.taskIndex);
+                const processo = mockProcessos.find(p => p.id === processoId);
+                if (!processo) return;
+                const tarefa = processo.checklists[processo.processo][taskIndex];
+                if (this.checked) {
+                    const hoje = new Date().toLocaleDateString('pt-BR');
+                    tarefa.concluida = true;
+                    tarefa.dataConclusao = hoje;
+                    label.classList.add('completed');
+                    dateEl.textContent = hoje;
+                } else {
+                    tarefa.concluida = false;
+                    tarefa.dataConclusao = null;
+                    label.classList.remove('completed');
+                    dateEl.textContent = '';
+                }
+            });
+        });
+    }
     
     function populateUfSelect() {
         const ufs = ["AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"];
         const select = document.getElementById('st-estado');
         ufs.forEach(uf => select.innerHTML += `<option value="${uf}">${uf}</option>`);
+    }
+
+    // Fecha os modais se clicar fora do conteúdo
+    window.onclick = function(event) {
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = "none";
+        }
     }
     </script>
 
