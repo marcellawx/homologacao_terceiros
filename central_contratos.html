@@ -21,12 +21,12 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* --- CONTROLES DO KANBAN (PESQUISA E FILTROS) --- */
-        .kanban-controls { display: flex; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
-        .kanban-controls input, .kanban-controls select {
+        /* --- CONTROLES (PESQUISA E FILTROS) --- */
+        .controls-container { display: flex; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
+        .controls-container input, .controls-container select {
             padding: 10px; border: 1px solid var(--cor-borda); border-radius: 5px; font-size: 16px;
         }
-        .kanban-controls input[type="search"] { flex-grow: 1; }
+        .controls-container input[type="search"] { flex-grow: 1; }
 
         /* --- LAYOUT DO KANBAN --- */
         .kanban-board { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 20px; }
@@ -100,7 +100,7 @@
     </nav>
 
     <div id="kanban-view" class="tab-content active">
-        <div class="kanban-controls">
+        <div class="controls-container">
             <input type="search" id="search-input" placeholder="Pesquisar por empresa...">
             <select id="filter-status">
                 <option value="">Filtrar por Status</option>
@@ -113,6 +113,14 @@
     </div>
 
     <div id="reajuste-view" class="tab-content">
+        <div class="controls-container">
+            <input type="search" id="reajuste-search-input" placeholder="Pesquisar por empresa...">
+            <select id="reajuste-sort">
+                <option value="asc">Classificar por dias (Crescente)</option>
+                <option value="desc">Classificar por dias (Decrescente)</option>
+            </select>
+            <input type="month" id="reajuste-period-filter">
+        </div>
         <ul class="reajuste-list" id="reajuste-list">
             </ul>
     </div>
@@ -126,7 +134,6 @@
             <ul id="modal-timeline" class="timeline"></ul>
         </div>
     </div>
-    
     <div id="storytelling-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -166,10 +173,27 @@
         {
             id: 101, empresa: "ACME Soluções de TI", processo: "Homologação", tipoContrato: "Consultoria", status: "Pendente Análise", ultimaAtualizacao: "2025-10-14", zendeskTicket: 87345,
             dataHomologacao: "2024-10-20",
-            storytelling: {
-                codigo: 100201, cnpj: "12.345.678/0001-99", contatoExcecao: "Ana Silva", emailExcecao: "ana.silva@acme.com", telefone: "11987654321", contatosDemanda: "bruno.costa@acme.com", telefoneDemanda: "11912345678", receberDemanda: "Sim", estado: "SP", numeroContrato: "CTR-2024-1020", contatosFechamento: "financeiro@acme.com", ehCanal: "Não", elegivelSelo: "Sim", responsavelSelo: "Mariana Lima", emailSelo: "mariana.lima@acme.com", obs: "Fornecedor estratégico para projetos Protheus.", filiaisCxs: "Sim", filiaisIp: "Não", areaSolicitante: "Serviços Sudeste"
-            },
-            checklists: { "Homologação": [ { tarefa: "BATE PAPO SOBRE HOMOLOGAÇÃO COM O FORNECEDOR", concluida: true, dataConclusao: "12/10/2025" } ] },
+            storytelling: { codigo: 100201, cnpj: "12.345.678/0001-99", estado: "SP", numeroContrato: "CTR-2024-1020", ehCanal: "Não", elegivelSelo: "Sim" },
+            checklists: { "Homologação": [
+                { tarefa: "BATE PAPO SOBRE HOMOLOGAÇÃO COM O FORNECEDOR", concluida: true, dataConclusao: "12/10/2025" },
+                { tarefa: "E-mail com documentação para novo contrato de prestação de serviços", concluida: true, dataConclusao: "13/10/2025" },
+                { tarefa: "Alimentar informações na planilha de Status e Acompanhamento das Homologações - RMO Terceiros", concluida: false, dataConclusao: null },
+                { tarefa: "Validar documento assim que receber", concluida: false, dataConclusao: null },
+                { tarefa: "Em caso de alteração de valor de função já existente enviar comunicado para o solicitante da Homologação validar", concluida: false, dataConclusao: null },
+                { tarefa: "Se tiver função nova, validar com a Unidade que pediu a homologação se o valor está dentro do acordado", concluida: false, dataConclusao: null },
+                { tarefa: "Aguardando aprovação dos valores e ou inclusão de mais função", concluida: false, dataConclusao: null },
+                { tarefa: "Enviar e-mail para CST Contratos com Formulário, aprovação do gerente e documentação da empresa", concluida: false, dataConclusao: null },
+                { tarefa: "Validar no Protheus se contrato foi finalizado (cadastrado) gerar relatório", concluida: false, dataConclusao: null },
+                { tarefa: "Colocar as informações em nossa planilha na aba Fornecedores e na aba VALOR HORA", concluida: false, dataConclusao: null },
+                { tarefa: "Colocar informação do Fornecedor no Fluig para Proposta de exceção", concluida: false, dataConclusao: null },
+                { tarefa: "Enviar e-mail de Boas Vindas", concluida: false, dataConclusao: null },
+                { tarefa: "Solicitar para a área de CST PMO Local, abrir ticket para cadastro de contrato do fornecedor no Horacius", concluida: false, dataConclusao: null },
+                { tarefa: "Bate papo Onboarding", concluida: false, dataConclusao: null },
+                { tarefa: "Coloca informação na planilha de Status e Acompanhamento das Homologações.", concluida: false, dataConclusao: null },
+                { tarefa: "Responder ticket do Zendesk finalizando o processo e avisando a área.", concluida: false, dataConclusao: null },
+                { tarefa: "Confirmar se preencheram formulário para receber o selo", concluida: false, dataConclusao: null },
+                { tarefa: "Disponibilizar o selo partners para fornecedores SELIND", concluida: false, dataConclusao: null }
+            ]},
             historico: [ { data: "2025-10-14", evento: "Fornecedor agendou reunião inicial." } ]
         },
         {
@@ -187,6 +211,13 @@
             historico: [ { data: "2025-10-10", evento: "Pendências na documentação enviadas ao fornecedor." } ]
         },
         {
+            id: 104, empresa: "Orion Soluções", processo: "Aditivo", tipoContrato: "Consultoria", status: "Pendente Análise", ultimaAtualizacao: "2025-10-12", zendeskTicket: 34567,
+            dataHomologacao: "2023-01-15",
+            storytelling: { codigo: 100500, cnpj: "66.777.888/0001-99", estado: "BA", numeroContrato: "CTR-2023-0050", ehCanal: "Não", elegivelSelo: "Sim" },
+            checklists: { "Aditivo": [ { tarefa: "Analisar escopo e cláusulas", concluida: false, dataConclusao: null } ] },
+            historico: [ { data: "2025-10-12", evento: "Recebida solicitação de aditivo para incluir novo serviço." } ]
+        },
+        {
             id: 105, empresa: "LogiSystem", processo: "Desomologação", tipoContrato: "Consultoria", status: "Concluído", ultimaAtualizacao: "2025-09-30", zendeskTicket: 48859,
             dataHomologacao: "2022-05-20",
             storytelling: { codigo: 100112, cnpj: "11.222.333/0001-44", estado: "PR", numeroContrato: "CTR-2022-0412", ehCanal: "Não", elegivelSelo: "Sim" },
@@ -201,9 +232,15 @@
         populateUfSelect();
         renderKanbanView();
         
+        // Listeners do Kanban
         document.getElementById('search-input').addEventListener('input', renderKanbanView);
         document.getElementById('filter-status').addEventListener('change', renderKanbanView);
         document.getElementById('filter-processo').addEventListener('change', renderKanbanView);
+        
+        // Listeners da Aba Reajuste
+        document.getElementById('reajuste-search-input').addEventListener('input', renderReajusteView);
+        document.getElementById('reajuste-sort').addEventListener('change', renderReajusteView);
+        document.getElementById('reajuste-period-filter').addEventListener('change', renderReajusteView);
     });
 
     // --- LÓGICA DAS ABAS ---
@@ -262,7 +299,6 @@
         addChecklistListeners();
     }
 
-    // CORRIGIDO: Esta função foi reescrita para incluir os elementos que faltavam.
     function createCardHtml(processo) {
         const processoSlug = processo.processo.toLowerCase().replace('ç', 'c');
         const checklist = processo.checklists[processo.processo] || [];
@@ -272,9 +308,7 @@
             return `
                 <li>
                     <div class="task-content">
-                        <input type="checkbox" id="task-${processo.id}-${index}" 
-                               data-processo-id="${processo.id}" data-task-index="${index}" 
-                               ${item.concluida ? 'checked' : ''}>
+                        <input type="checkbox" id="task-${processo.id}-${index}" data-processo-id="${processo.id}" data-task-index="${index}" ${item.concluida ? 'checked' : ''}>
                         <label for="task-${processo.id}-${index}" class="${item.concluida ? 'completed' : ''}">${item.tarefa}</label>
                     </div>
                     <small class="checklist-date">${dataConclusao}</small>
@@ -308,38 +342,58 @@
         const listEl = document.getElementById('reajuste-list');
         listEl.innerHTML = '';
         const hoje = new Date();
+        
+        const searchTerm = document.getElementById('reajuste-search-input').value.toLowerCase();
+        const sortOrder = document.getElementById('reajuste-sort').value;
+        const periodFilter = document.getElementById('reajuste-period-filter').value; // Formato YYYY-MM
 
-        mockProcessos
-            .filter(p => p.dataHomologacao) 
-            .sort((a,b) => new Date(a.dataHomologacao) - new Date(b.dataHomologacao))
-            .forEach(p => {
+        let fornecedores = mockProcessos
+            .filter(p => p.dataHomologacao)
+            .map(p => {
                 const dataHomologacao = new Date(p.dataHomologacao + 'T12:00:00Z');
                 let proximoAniversario = new Date(dataHomologacao);
                 proximoAniversario.setFullYear(hoje.getFullYear());
                 if (proximoAniversario < hoje) {
                     proximoAniversario.setFullYear(hoje.getFullYear() + 1);
                 }
-
                 const diffTime = proximoAniversario - hoje;
                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                const urgentClass = diffDays <= 30 ? 'urgent' : '';
-
-                listEl.innerHTML += `
-                    <li class="reajuste-item">
-                        <div class="reajuste-info">
-                            <h3>${p.empresa}</h3>
-                            <p>Data de Homologação: ${dataHomologacao.toLocaleDateString('pt-BR')} | Próximo Aniversário: ${proximoAniversario.toLocaleDateString('pt-BR')}</p>
-                        </div>
-                        <div class="reajuste-countdown">
-                            <div class="days ${urgentClass}">${diffDays}</div>
-                            <div class="label">dias restantes</div>
-                        </div>
-                    </li>
-                `;
+                
+                return { ...p, proximoAniversario, diffDays };
+            })
+            .filter(p => {
+                const matchesSearch = p.empresa.toLowerCase().includes(searchTerm);
+                let matchesPeriod = true;
+                if (periodFilter) {
+                    const [year, month] = periodFilter.split('-');
+                    matchesPeriod = p.proximoAniversario.getFullYear() == year && (p.proximoAniversario.getMonth() + 1) == month;
+                }
+                return matchesSearch && matchesPeriod;
             });
+
+        fornecedores.sort((a, b) => {
+            return sortOrder === 'asc' ? a.diffDays - b.diffDays : b.diffDays - a.diffDays;
+        });
+
+        fornecedores.forEach(p => {
+            const urgentClass = p.diffDays <= 30 ? 'urgent' : '';
+            listEl.innerHTML += `
+                <li class="reajuste-item">
+                    <div class="reajuste-info">
+                        <h3>${p.empresa}</h3>
+                        <p>Data de Homologação: ${new Date(p.dataHomologacao + 'T12:00:00Z').toLocaleDateString('pt-BR')} | Próximo Aniversário: ${p.proximoAniversario.toLocaleDateString('pt-BR')}</p>
+                    </div>
+                    <div class="reajuste-countdown">
+                        <div class="days ${urgentClass}">${p.diffDays}</div>
+                        <div class="label">dias restantes</div>
+                    </div>
+                </li>
+            `;
+        });
     }
 
     // --- LÓGICA DOS MODAIS E INTERATIVIDADE ---
+    // ... (As funções openHistoryModal, openStorytellingModal, closeModal, etc. continuam idênticas) ...
     function openHistoryModal(processoId) {
         const processo = mockProcessos.find(p => p.id === processoId);
         if (processo) {
@@ -348,14 +402,11 @@
             document.getElementById('history-modal').style.display = 'block';
         }
     }
-
     function openStorytellingModal(processoId) {
         const processo = mockProcessos.find(p => p.id === processoId);
         if (!processo || !processo.storytelling) return;
-        
         const s = processo.storytelling;
         document.getElementById('storytelling-title').textContent = `Detalhes de ${processo.empresa}`;
-        
         document.getElementById('st-fornecedor').value = processo.empresa || '';
         document.getElementById('st-codigo').value = s.codigo || '';
         document.getElementById('st-cnpj').value = s.cnpj || '';
@@ -377,14 +428,9 @@
         document.getElementById('st-filiais-cxs').value = s.filiaisCxs || 'Não';
         document.getElementById('st-filiais-ip').value = s.filiaisIp || 'Não';
         document.getElementById('st-area-solicitante').value = s.areaSolicitante || '';
-
         document.getElementById('storytelling-modal').style.display = 'block';
     }
-
-    function closeModal(modalId) {
-        document.getElementById(modalId).style.display = 'none';
-    }
-    
+    function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
     function addChecklistListeners() {
         document.querySelectorAll('.checklist input[type="checkbox"]').forEach(checkbox => {
             checkbox.addEventListener('change', function() {
@@ -410,19 +456,12 @@
             });
         });
     }
-    
     function populateUfSelect() {
         const ufs = ["AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"];
         const select = document.getElementById('st-estado');
         ufs.forEach(uf => select.innerHTML += `<option value="${uf}">${uf}</option>`);
     }
-
-    // Fecha os modais se clicar fora do conteúdo
-    window.onclick = function(event) {
-        if (event.target.classList.contains('modal')) {
-            event.target.style.display = "none";
-        }
-    }
+    window.onclick = function(event) { if (event.target.classList.contains('modal')) { event.target.style.display = "none"; } }
     </script>
 
 </body>
