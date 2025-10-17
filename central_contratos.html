@@ -14,6 +14,24 @@
         h1, h2 { color: var(--cor-primaria); }
         h1 { text-align: center; margin-bottom: 20px; }
 
+        /* --- NOVO: BARRA DE NOTIFICAÇÃO --- */
+        .notification-bar {
+            background-color: var(--cor-aviso);
+            color: #333;
+            padding: 12px 20px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none; /* Inicia escondido */
+        }
+        .notification-bar a {
+            color: var(--cor-primaria);
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
         /* --- NAVEGAÇÃO POR ABAS --- */
         .main-tabs { border-bottom: 2px solid var(--cor-borda); margin-bottom: 25px; text-align: center; }
         .tab-btn { background-color: transparent; border: none; padding: 15px 25px; font-size: 18px; cursor: pointer; color: #555; border-bottom: 4px solid transparent; }
@@ -93,6 +111,8 @@
 <body>
 
     <h1>Central de Contratos de Terceiros</h1>
+    
+    <div id="notification-bar" class="notification-bar"></div>
 
     <nav class="main-tabs">
         <button class="tab-btn active" onclick="openTab(event, 'kanban-view')">Kanban de Processos</button>
@@ -122,7 +142,7 @@
             <input type="month" id="reajuste-period-filter">
         </div>
         <ul class="reajuste-list" id="reajuste-list">
-            </ul>
+        </ul>
     </div>
 
     <div id="history-modal" class="modal">
@@ -254,6 +274,38 @@
             renderReajusteView();
         }
     }
+    
+    // --- NOVO: LÓGICA DA NOTIFICAÇÃO ---
+    function updateNotification() {
+        const notificationBar = document.getElementById('notification-bar');
+        const pendingCount = mockProcessos.filter(p => p.status === 'Pendente Análise').length;
+        
+        if (pendingCount > 0) {
+            notificationBar.innerHTML = `🔔 Você tem ${pendingCount} ${pendingCount > 1 ? 'pendências' : 'pendência'} na coluna <a onclick="focusPending()">"Pendente Análise"</a>.`;
+            notificationBar.style.display = 'block';
+        } else {
+            notificationBar.style.display = 'none';
+        }
+    }
+    
+    function focusPending() {
+        // Leva o usuário para a aba do Kanban
+        openTab({ currentTarget: document.querySelector('.tab-btn[onclick*="kanban-view"]') }, 'kanban-view');
+        
+        // Força o filtro para "Pendente Análise"
+        document.getElementById('filter-status').value = 'Pendente Análise';
+        renderKanbanView();
+        
+        // Animação de destaque na coluna
+        const pendingColumn = document.getElementById('col-pendente');
+        if(pendingColumn) {
+            pendingColumn.style.transition = 'all 0.3s ease';
+            pendingColumn.style.backgroundColor = '#FFF3CD';
+            setTimeout(() => {
+                pendingColumn.style.backgroundColor = ''; // Volta à cor original
+            }, 1500);
+        }
+    }
 
     // --- LÓGICA DO KANBAN ---
     const colunas = {
@@ -271,6 +323,7 @@
     }
 
     function renderKanbanView() {
+        updateNotification(); // Atualiza a notificação sempre que o Kanban for renderizado
         const board = document.getElementById('kanban-board');
         board.innerHTML = '';
 
@@ -300,7 +353,8 @@
     }
 
     function createCardHtml(processo) {
-        const processoSlug = processo.processo.toLowerCase().replace('ç', 'c');
+        // CORRIGIDO: Slug para "desomologação"
+        const processoSlug = processo.processo.toLowerCase().replace(/ç/g, 'c').replace(/ã/g, 'a');
         const checklist = processo.checklists[processo.processo] || [];
         
         let checklistHtml = checklist.map((item, index) => {
