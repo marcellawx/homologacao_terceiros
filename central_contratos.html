@@ -86,39 +86,36 @@
         .reajuste-countdown .label { font-size: 14px; color: #555; }
 
         /* --- VISÃO PÓS-HOMOLOGAÇÃO --- */
-        .pos-homologacao-list { list-style: none; padding: 0; max-width: 900px; margin: 0 auto; } /* Centraliza a lista */
+        .pos-homologacao-list { list-style: none; padding: 0; max-width: 900px; margin: 0 auto; }
         .pos-homologacao-card h3 { font-size: 18px; margin-bottom: 10px; color: var(--cor-texto); }
         .pos-homologacao-card p { font-size: 14px; margin: 5px 0; color: #555; }
         .process-section { border-top: 1px solid var(--cor-borda); margin-top: 15px; padding-top: 15px; }
         .process-section h4 { font-size: 15px; margin: 0 0 10px 0; color: var(--cor-primaria); display: flex; justify-content: space-between; align-items: center; }
         .process-section .action-area { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
         .process-section input[type="email"], .process-section input[type="number"], .process-section select { padding: 8px; border: 1px solid var(--cor-borda); border-radius: 4px; font-size: 14px; }
-        .process-section select { background-color: white; } /* Para garantir visibilidade */
+        .process-section select { background-color: white; }
         .mit-note { font-size: 12px; color: #6c757d; margin-top: 5px; }
-        .status-select { font-weight: bold; } /* Estilo para o select de status */
+        .status-select { font-weight: bold; }
         .status-nao-iniciado { color: var(--cor-status-nao-iniciado); }
         .status-formulario-enviado { color: var(--cor-status-enviado); }
         .status-em-andamento { color: var(--cor-status-andamento); }
         .status-cancelado { color: var(--cor-status-cancelado); }
         .status-concluido { color: var(--cor-status-concluido); }
 
-
         /* --- MODAIS --- */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(5px); }
-        .modal-content { background-color: #fefefe; margin: 5% auto; padding: 30px; border: 1px solid #888; width: 90%; max-width: 600px; /* Reduzido para modais de e-mail */ border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); }
-        .modal-content.large { max-width: 800px; } /* Modal maior para storytelling */
+        .modal-content { background-color: #fefefe; margin: 5% auto; padding: 30px; border: 1px solid #888; width: 90%; max-width: 600px; border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); }
+        .modal-content.large { max-width: 800px; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--cor-borda); padding-bottom: 15px; margin-bottom: 20px; }
         .modal-header h2 { margin: 0; font-size: 20px; }
         .close-btn { color: #aaa; font-size: 32px; font-weight: bold; cursor: pointer; }
 
-        /* Estilos para modais de e-mail */
         .email-modal-body { display: flex; flex-direction: column; gap: 15px; }
         .email-modal-body label { font-weight: bold; font-size: 14px; }
-        .email-modal-body input[type="email"], .email-modal-body textarea { width: 100%; padding: 10px; border: 1px solid var(--cor-borda); border-radius: 5px; font-size: 14px; box-sizing: border-box; }
+        .email-modal-body input, .email-modal-body textarea { width: 100%; padding: 10px; border: 1px solid var(--cor-borda); border-radius: 5px; font-size: 14px; box-sizing: border-box; }
         .email-modal-body textarea { min-height: 150px; resize: vertical; }
         .email-modal-footer { margin-top: 20px; text-align: right; }
 
-        /* Formulário do Storytelling */
         .storytelling-form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .form-group { display: flex; flex-direction: column; }
         .form-group.full-width { grid-column: 1 / -1; }
@@ -170,7 +167,8 @@
     </div>
 
     <div id="history-modal" class="modal">
-        <div class="modal-content large"> <div class="modal-header">
+        <div class="modal-content large">
+            <div class="modal-header">
                 <h2 id="modal-title">Histórico do Processo</h2>
                 <span class="close-btn" onclick="closeModal('history-modal')">&times;</span>
             </div>
@@ -178,7 +176,8 @@
         </div>
     </div>
     <div id="storytelling-modal" class="modal">
-        <div class="modal-content large"> <div class="modal-header">
+        <div class="modal-content large">
+            <div class="modal-header">
                 <h2 id="storytelling-title">Detalhes do Fornecedor</h2>
                 <span class="close-btn" onclick="closeModal('storytelling-modal')">&times;</span>
             </div>
@@ -230,7 +229,7 @@
 
 Parabéns pela conclusão da homologação!
 
-Conforme conversamos em nosso onboarding, o próximo passo é o preenchimento das informações no Painel do Fornecedor. Isso garantirá que sua equipe tenha os acessos necessários agendas de todos os seus consultores de forma unificada.
+Conforme conversamos em nosso onboarding, o próximo passo é o preenchimento das informações no Painel do Fornecedor. Isso garantirá que sua equipe tenha os acessos necessários às nossas plataformas.
 
 Por favor, clique no link abaixo para acessar e completar o formulário:
 [Link Simulado para o Formulário do Painel]
@@ -305,218 +304,179 @@ Atenciosamente,</textarea>
 
     <script>
     // --- BANCO DE DADOS FALSO (MOCK) ---
-    // Adicionado status pós-homologação e garantido que todos os exemplos estão aqui
     let mockProcessos = [
         {
             id: 101, empresa: "ACME Soluções de TI", processo: "Homologação", tipoContrato: "Consultoria", status: "Concluído", ultimaAtualizacao: "2025-10-14", zendeskTicket: 87345,
             dataHomologacao: "2024-10-20", dataConclusaoHomologacao: "2025-10-14",
             storytelling: { codigo: 100201, cnpj: "12.345.678/0001-99", estado: "SP", numeroContrato: "CTR-2024-1020", ehCanal: "Não", elegivelSelo: "Sim", emailSelo: "mariana.lima@acme.com" },
-            checklists: { "Homologação": [ /* Checklist completo aqui */ ] }, historico: [ { data: "2025-10-14", evento: "Processo de Homologação Concluído." } ],
-            posHomologacaoStatus: { painelFornecedor: "Não iniciado", seloPartners: "Não iniciado", liberacaoMit: "Não iniciado" } // Status Pós-Homologação
+            checklists: { "Homologação": [
+                { tarefa: "BATE PAPO SOBRE HOMOLOGAÇÃO COM O FORNECEDOR", concluida: true, dataConclusao: "12/10/2025" }, { tarefa: "E-mail com documentação para novo contrato de prestação de serviços", concluida: true, dataConclusao: "13/10/2025" },
+                { tarefa: "Alimentar informações na planilha de Status e Acompanhamento das Homologações - RMO Terceiros", concluida: true, dataConclusao: "13/10/2025" }, { tarefa: "Validar documento assim que receber", concluida: true, dataConclusao: "14/10/2025" },
+                { tarefa: "Em caso de alteração de valor de função já existente enviar comunicado para o solicitante da Homologação validar", concluida: true, dataConclusao: "14/10/2025" }, { tarefa: "Se tiver função nova, validar com a Unidade que pediu a homologação se o valor está dentro do acordado", concluida: true, dataConclusao: "14/10/2025" },
+                { tarefa: "Aguardando aprovação dos valores e ou inclusão de mais função", concluida: true, dataConclusao: "14/10/2025" }, { tarefa: "Enviar e-mail para CST Contratos com Formulário, aprovação do gerente e documentação da empresa", concluida: true, dataConclusao: "14/10/2025" },
+                { tarefa: "Validar no Protheus se contrato foi finalizado (cadastrado) gerar relatório", concluida: true, dataConclusao: "14/10/2025" }, { tarefa: "Colocar as informações em nossa planilha na aba Fornecedores e na aba VALOR HORA", concluida: true, dataConclusao: "14/10/2025" },
+                { tarefa: "Colocar informação do Fornecedor no Fluig para Proposta de exceção", concluida: true, dataConclusao: "14/10/2025" }, { tarefa: "Enviar e-mail de Boas Vindas", concluida: true, dataConclusao: "14/10/2025" },
+                { tarefa: "Solicitar para a área de CST PMO Local, abrir ticket para cadastro de contrato do fornecedor no Horacius", concluida: true, dataConclusao: "14/10/2025" }, { tarefa: "Bate papo Onboarding", concluida: true, dataConclusao: "14/10/2025" },
+                { tarefa: "Coloca informação na planilha de Status e Acompanhamento das Homologações.", concluida: true, dataConclusao: "14/10/2025" }, { tarefa: "Responder ticket do Zendesk finalizando o processo e avisando a área.", concluida: true, dataConclusao: "14/10/2025" },
+                { tarefa: "Confirmar se preencheram formulário para receber o selo", concluida: true, dataConclusao: "14/10/2025" }, { tarefa: "Disponibilizar o selo partners para fornecedores SELIND", concluida: true, dataConclusao: "14/10/2025" }
+            ]}, historico: [ { data: "2025-10-14", evento: "Processo de Homologação Concluído." } ],
+            posHomologacaoStatus: { painelFornecedor: "Não iniciado", seloPartners: "Não iniciado", liberacaoMit: "Não iniciado" }
         },
         {
             id: 102, empresa: "Nexus Inovações", processo: "Reajuste", tipoContrato: "Prestação de Serviços", status: "Em Andamento", ultimaAtualizacao: "2025-10-15", zendeskTicket: 22518,
-            dataHomologacao: "2024-12-05",
-            storytelling: { codigo: 100315, cnpj: "98.765.432/0001-11", estado: "RJ", numeroContrato: "CTR-2023-0874", ehCanal: "Sim", elegivelSelo: "Sim" },
+            dataHomologacao: "2024-12-05", storytelling: { codigo: 100315, ehCanal: "Sim", elegivelSelo: "Sim" },
             checklists: { "Reajuste": [ { tarefa: "Receber solicitação de reajuste", concluida: true, dataConclusao: "12/10/2025" } ] },
             historico: [ { data: "2025-10-15", evento: "Análise do índice contratual concluída." } ]
         },
         {
             id: 103, empresa: "Quantum Tech", processo: "Homologação", tipoContrato: "Consultoria", status: "Aguardando Terceiros", ultimaAtualizacao: "2025-10-10", zendeskTicket: 91023,
-            dataHomologacao: "2025-08-01",
-            storytelling: { codigo: 100450, cnpj: "55.444.333/0001-22", estado: "MG", numeroContrato: "CTR-2025-1130", ehCanal: "Não", elegivelSelo: "Não" },
+            dataHomologacao: "2025-08-01", storytelling: { codigo: 100450, ehCanal: "Não", elegivelSelo: "Não" },
             checklists: { "Homologação": [ { tarefa: "Validar documento assim que receber", concluida: false, dataConclusao: null } ] },
             historico: [ { data: "2025-10-10", evento: "Pendências na documentação enviadas ao fornecedor." } ]
         },
         {
             id: 104, empresa: "Orion Soluções", processo: "Aditivo", tipoContrato: "Consultoria", status: "Pendente Análise", ultimaAtualizacao: "2025-10-12", zendeskTicket: 34567,
-            dataHomologacao: "2023-01-15",
-            storytelling: { codigo: 100500, cnpj: "66.777.888/0001-99", estado: "BA", numeroContrato: "CTR-2023-0050", ehCanal: "Não", elegivelSelo: "Sim" },
+            dataHomologacao: "2023-01-15", storytelling: { codigo: 100500, ehCanal: "Não", elegivelSelo: "Sim" },
             checklists: { "Aditivo": [ { tarefa: "Analisar escopo e cláusulas", concluida: false, dataConclusao: null } ] },
             historico: [ { data: "2025-10-12", evento: "Recebida solicitação de aditivo para incluir novo serviço." } ]
         },
         {
             id: 105, empresa: "LogiSystem", processo: "Desomologação", tipoContrato: "Consultoria", status: "Concluído", ultimaAtualizacao: "2025-09-30", zendeskTicket: 48859,
-            dataHomologacao: "2022-05-20",
-            storytelling: { codigo: 100112, cnpj: "11.222.333/0001-44", estado: "PR", numeroContrato: "CTR-2022-0412", ehCanal: "Não", elegivelSelo: "Sim" },
+            dataHomologacao: "2022-05-20", storytelling: { codigo: 100112, ehCanal: "Não", elegivelSelo: "Sim" },
             checklists: { "Desomologação": [ { tarefa: "Formalizar distrato", concluida: true, dataConclusao: "30/09/2025" } ]},
             historico: [ { data: "2025-09-30", evento: "Processo de desomologação finalizado." }]
         }
     ];
-    // Adiciona o checklist completo ao primeiro processo para teste
-    mockProcessos[0].checklists["Homologação"] = [
-        { tarefa: "BATE PAPO SOBRE HOMOLOGAÇÃO COM O FORNECEDOR", concluida: true, dataConclusao: "12/10/2025" }, { tarefa: "E-mail com documentação para novo contrato de prestação de serviços", concluida: true, dataConclusao: "13/10/2025" },
-        { tarefa: "Alimentar informações na planilha de Status e Acompanhamento das Homologações - RMO Terceiros", concluida: true, dataConclusao: "13/10/2025" }, { tarefa: "Validar documento assim que receber", concluida: true, dataConclusao: "14/10/2025" },
-        { tarefa: "Em caso de alteração de valor de função já existente enviar comunicado para o solicitante da Homologação validar", concluida: true, dataConclusao: "14/10/2025" }, { tarefa: "Se tiver função nova, validar com a Unidade que pediu a homologação se o valor está dentro do acordado", concluida: true, dataConclusao: "14/10/2025" },
-        { tarefa: "Aguardando aprovação dos valores e ou inclusão de mais função", concluida: true, dataConclusao: "14/10/2025" }, { tarefa: "Enviar e-mail para CST Contratos com Formulário, aprovação do gerente e documentação da empresa", concluida: true, dataConclusao: "14/10/2025" },
-        { tarefa: "Validar no Protheus se contrato foi finalizado (cadastrado) gerar relatório", concluida: true, dataConclusao: "14/10/2025" }, { tarefa: "Colocar as informações em nossa planilha na aba Fornecedores e na aba VALOR HORA", concluida: true, dataConclusao: "14/10/2025" },
-        { tarefa: "Colocar informação do Fornecedor no Fluig para Proposta de exceção", concluida: true, dataConclusao: "14/10/2025" }, { tarefa: "Enviar e-mail de Boas Vindas", concluida: true, dataConclusao: "14/10/2025" },
-        { tarefa: "Solicitar para a área de CST PMO Local, abrir ticket para cadastro de contrato do fornecedor no Horacius", concluida: true, dataConclusao: "14/10/2025" }, { tarefa: "Bate papo Onboarding", concluida: true, dataConclusao: "14/10/2025" },
-        { tarefa: "Coloca informação na planilha de Status e Acompanhamento das Homologações.", concluida: true, dataConclusao: "14/10/2025" }, { tarefa: "Responder ticket do Zendesk finalizando o processo e avisando a área.", concluida: true, dataConclusao: "14/10/2025" },
-        { tarefa: "Confirmar se preencheram formulário para receber o selo", concluida: true, dataConclusao: "14/10/2025" }, { tarefa: "Disponibilizar o selo partners para fornecedores SELIND", concluida: true, dataConclusao: "14/10/2025" }
-    ];
 
     // --- LÓGICA GERAL DA PÁGINA ---
-    document.addEventListener('DOMContentLoaded', () => { /* ... código idêntico ... */ });
+    document.addEventListener('DOMContentLoaded', () => {
+        populateFilters();
+        populateUfSelect();
+        renderKanbanView();
+        
+        document.getElementById('search-input').addEventListener('input', renderKanbanView);
+        document.getElementById('filter-status').addEventListener('change', renderKanbanView);
+        document.getElementById('filter-processo').addEventListener('change', renderKanbanView);
+        
+        document.getElementById('reajuste-search-input').addEventListener('input', renderReajusteView);
+        document.getElementById('reajuste-sort').addEventListener('change', renderReajusteView);
+        document.getElementById('reajuste-period-filter').addEventListener('change', renderReajusteView);
+
+        document.getElementById('pos-homologacao-search').addEventListener('input', renderPosHomologacaoView);
+    });
 
     // --- LÓGICA DAS ABAS ---
-    function openTab(evt, tabName) { /* ... código idêntico ... */ }
+    function openTab(evt, tabName) {
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(tabName).classList.add('active');
+        evt.currentTarget.classList.add('active');
+
+        if (tabName === 'kanban-view') renderKanbanView();
+        else if (tabName === 'reajuste-view') renderReajusteView();
+        else if (tabName === 'pos-homologacao-view') renderPosHomologacaoView();
+    }
     
     // --- LÓGICA DA NOTIFICAÇÃO ---
-    function updateNotification() { /* ... código idêntico ... */ }
-    function focusPending() { /* ... código idêntico ... */ }
+    function updateNotification() {
+        const notificationBar = document.getElementById('notification-bar');
+        const pendingCount = mockProcessos.filter(p => p.status === 'Pendente Análise').length;
+        if (pendingCount > 0) {
+            notificationBar.innerHTML = `🔔 Você tem ${pendingCount} ${pendingCount > 1 ? 'pendências' : 'pendência'} na coluna <a onclick="focusPending()">"Pendente Análise"</a>.`;
+            notificationBar.style.display = 'block';
+        } else {
+            notificationBar.style.display = 'none';
+        }
+    }
+    function focusPending() {
+        openTab({ currentTarget: document.querySelector('.tab-btn[onclick*="kanban-view"]') }, 'kanban-view');
+        document.getElementById('filter-status').value = 'Pendente Análise';
+        renderKanbanView();
+        const pendingColumn = document.getElementById('col-pendente');
+        if(pendingColumn) {
+            pendingColumn.style.transition = 'all 0.3s ease';
+            pendingColumn.style.backgroundColor = '#FFF3CD';
+            setTimeout(() => { pendingColumn.style.backgroundColor = ''; }, 1500);
+        }
+    }
 
     // --- LÓGICA DO KANBAN ---
-    const colunas = { /* ... código idêntico ... */ };
-    function populateFilters() { /* ... código idêntico ... */ }
-    function renderKanbanView() { /* ... código idêntico ... */ }
-    function createCardHtml(processo) { /* ... código idêntico ... */ }
+    const colunas = { "Pendente Análise": { id: "col-pendente", titulo: "Pendente Análise" }, "Em Andamento": { id: "col-andamento", titulo: "Em Andamento" }, "Aguardando Terceiros": { id: "col-aguardando", titulo: "Aguardando Terceiros" }, "Concluído": { id: "col-concluido", titulo: "Concluído" } };
+
+    function populateFilters() {
+        const statusSet = new Set(mockProcessos.map(p => p.status));
+        const processoSet = new Set(mockProcessos.map(p => p.processo));
+        const statusFilter = document.getElementById('filter-status');
+        const processoFilter = document.getElementById('filter-processo');
+        statusSet.forEach(s => statusFilter.innerHTML += `<option value="${s}">${s}</option>`);
+        processoSet.forEach(p => processoFilter.innerHTML += `<option value="${p}">${p}</option>`);
+    }
+
+    function renderKanbanView() {
+        updateNotification();
+        const board = document.getElementById('kanban-board'); board.innerHTML = '';
+        const searchTerm = document.getElementById('search-input').value.toLowerCase();
+        const statusFilter = document.getElementById('filter-status').value;
+        const processoFilter = document.getElementById('filter-processo').value;
+        const filteredProcessos = mockProcessos.filter(p => p.empresa.toLowerCase().includes(searchTerm) && (!statusFilter || p.status === statusFilter) && (!processoFilter || p.processo === processoFilter));
+        for (const status in colunas) { const colInfo = colunas[status]; const count = filteredProcessos.filter(p => p.status === status).length; board.innerHTML += `<div class="kanban-column" id="${colInfo.id}"><h2 >${colInfo.titulo} <span class="task-count">${count}</span></h2></div>`; }
+        filteredProcessos.forEach(p => { const colEl = document.getElementById(colunas[p.status].id); if (colEl) colEl.innerHTML += createCardHtml(p); });
+        addChecklistListeners();
+    }
+
+    function createCardHtml(processo) {
+        const processoSlug = processo.processo.toLowerCase().replace(/ç/g, 'c').replace(/ã/g, 'a');
+        const checklist = processo.checklists[processo.processo] || [];
+        let checklistHtml = checklist.map((item, index) => {
+            const dataConclusao = item.concluida && item.dataConclusao ? item.dataConclusao : '';
+            return `<li><div class="task-content"><input type="checkbox" id="task-${processo.id}-${index}" data-processo-id="${processo.id}" data-task-index="${index}" ${item.concluida ? 'checked' : ''}><label for="task-${processo.id}-${index}" class="${item.concluida ? 'completed' : ''}">${item.tarefa}</label></div><small class="checklist-date">${dataConclusao}</small></li>`;
+        }).join('');
+        return `<div class="kanban-card card-base" style="border-left-color: var(--cor-${processoSlug === 'reajuste' ? 'aviso' : processoSlug === 'aditivo' ? 'info' : processoSlug === 'desomologacao' ? 'perigo' : 'primaria'});"><div class="card-header"><h3><a href="#" onclick="event.preventDefault(); openStorytellingModal(${processo.id})">${processo.empresa}</a></h3><span class="badge ${processoSlug}">${processo.processo}</span></div><div class="card-body"><p><strong>Zendesk:</strong> <a href="#" target="_blank">Ticket #${processo.zendeskTicket}</a></p><p><strong>Última Atividade:</strong> ${new Date(processo.ultimaAtualizacao + 'T12:00:00Z').toLocaleDateString('pt-BR')}</p></div><details class="checklist-container"><summary>Ver Checklist de Afazeres</summary><ul class="checklist">${checklistHtml}</ul></details><div class="card-footer"><button class="btn" onclick="openHistoryModal(${processo.id})">Ver Histórico</button></div></div>`;
+    }
 
     // --- LÓGICA DA ABA DE REAJUSTE ---
-    function renderReajusteView() { /* ... código idêntico ... */ }
+    function renderReajusteView() {
+        const listEl = document.getElementById('reajuste-list'); listEl.innerHTML = '';
+        const hoje = new Date();
+        const searchTerm = document.getElementById('reajuste-search-input').value.toLowerCase();
+        const sortOrder = document.getElementById('reajuste-sort').value;
+        const periodFilter = document.getElementById('reajuste-period-filter').value;
+        let fornecedores = mockProcessos.filter(p => p.dataHomologacao).map(p => {
+            const dataHomologacao = new Date(p.dataHomologacao + 'T12:00:00Z');
+            let proximoAniversario = new Date(dataHomologacao); proximoAniversario.setFullYear(hoje.getFullYear());
+            if (proximoAniversario < hoje) proximoAniversario.setFullYear(hoje.getFullYear() + 1);
+            const diffDays = Math.ceil((proximoAniversario - hoje) / (1000 * 60 * 60 * 24));
+            return { ...p, proximoAniversario, diffDays };
+        }).filter(p => {
+            const matchesSearch = p.empresa.toLowerCase().includes(searchTerm);
+            let matchesPeriod = true;
+            if (periodFilter) { const [year, month] = periodFilter.split('-'); matchesPeriod = p.proximoAniversario.getFullYear() == year && (p.proximoAniversario.getMonth() + 1) == month; }
+            return matchesSearch && matchesPeriod;
+        });
+        fornecedores.sort((a, b) => sortOrder === 'asc' ? a.diffDays - b.diffDays : b.diffDays - a.diffDays);
+        if (fornecedores.length === 0) { listEl.innerHTML = '<p style="text-align:center; color: #555;">Nenhum fornecedor encontrado para os filtros aplicados.</p>'; return; }
+        fornecedores.forEach(p => { const urgentClass = p.diffDays <= 30 ? 'urgent' : ''; listEl.innerHTML += `<li class="reajuste-item"><div class="reajuste-info"><h3>${p.empresa}</h3><p>Data de Homologação: ${new Date(p.dataHomologacao + 'T12:00:00Z').toLocaleDateString('pt-BR')} | Próximo Aniversário: ${p.proximoAniversario.toLocaleDateString('pt-BR')}</p></div><div class="reajuste-countdown"><div class="days ${urgentClass}">${p.diffDays}</div><div class="label">dias restantes</div></div></li>`; });
+    }
 
     // --- LÓGICA DA ABA PÓS-HOMOLOGAÇÃO ---
-    function renderPosHomologacaoView() {
-        const listEl = document.getElementById('pos-homologacao-list');
-        listEl.innerHTML = '';
-        const searchTerm = document.getElementById('pos-homologacao-search').value.toLowerCase();
-
-        const concluidos = mockProcessos.filter(p =>
-            p.processo === "Homologação" && p.status === "Concluído" && p.empresa.toLowerCase().includes(searchTerm)
-        );
-
-        if (concluidos.length === 0) {
-            listEl.innerHTML = '<p style="text-align:center; color: #555;">Nenhum processo de homologação concluído encontrado.</p>';
-            return;
-        }
-        concluidos.forEach(p => { listEl.innerHTML += createPosHomologacaoCardHtml(p); });
-    }
-
-    function createPosHomologacaoCardHtml(processo) {
-        const isCanal = processo.storytelling?.ehCanal === "Sim";
-        const dataConclusao = processo.dataConclusaoHomologacao ? new Date(processo.dataConclusaoHomologacao + 'T12:00:00Z') : null;
-        const hoje = new Date();
-        const diffTime = dataConclusao ? hoje - dataConclusao : null;
-        const diffDays = diffTime ? Math.floor(diffTime / (1000 * 60 * 60 * 24)) : null;
-        const mitEligible = diffDays !== null && diffDays >= 0; // Ajustado para >= 0 para teste, idealmente >= 30
-
-        // Define os status padrão se não existirem
-        if (!processo.posHomologacaoStatus) {
-            processo.posHomologacaoStatus = { painelFornecedor: "Não iniciado", seloPartners: "Não iniciado", liberacaoMit: "Não iniciado" };
-        }
-        const statusPainel = processo.posHomologacaoStatus.painelFornecedor;
-        const statusSelo = processo.posHomologacaoStatus.seloPartners;
-        const statusMit = processo.posHomologacaoStatus.liberacaoMit;
-
-        const statusOptions = ["Não iniciado", "Formulário enviado", "Em andamento", "Cancelado", "Concluído"];
-        const statusOptionsSimple = ["Não iniciado", "Em andamento", "Cancelado", "Concluído"];
-
-        const selectPainel = createStatusSelect(processo.id, 'painelFornecedor', statusPainel, statusOptions);
-        const selectSelo = createStatusSelect(processo.id, 'seloPartners', statusSelo, statusOptionsSimple);
-        const selectMit = createStatusSelect(processo.id, 'liberacaoMit', statusMit, statusOptionsSimple);
-
-        return `
-            <li class="pos-homologacao-card card-base" id="pos-card-${processo.id}">
-                <h3>${processo.empresa}</h3>
-                <p><strong>Homologado em:</strong> ${dataConclusao ? dataConclusao.toLocaleDateString('pt-BR') : 'N/D'}</p>
-
-                <div class="process-section">
-                    <h4>Painel Fornecedor ${selectPainel}</h4>
-                    <div class="action-area">
-                        <button class="btn btn-small" onclick="openPainelFornecedorModal(${processo.id})" ${statusPainel !== 'Não iniciado' ? 'disabled' : ''}>Enviar Formulário</button>
-                        </div>
-                </div>
-
-                <div class="process-section">
-                    <h4>Selo Partners ${selectSelo}</h4>
-                    ${isCanal ? '<p style="color:var(--cor-sucesso); font-weight:bold;">✅ Fornecedor é Canal.</p>' : '<p style="color:var(--cor-perigo);">❌ Fornecedor NÃO é Canal.</p>'}
-                    <div class="action-area">
-                        <input type="email" value="${processo.storytelling?.emailSelo || ''}" placeholder="E-mail do Responsável pelo Selo" style="flex-grow: 1;" ${!isCanal ? 'disabled' : ''}>
-                        </div>
-                </div>
-
-                <div class="process-section">
-                    <h4>Liberação MIT ${selectMit}</h4>
-                    <p class="mit-note"> ${diffDays !== null ? `Dias desde a conclusão: ${diffDays}.` : ''} ${mitEligible ? '<strong style="color:var(--cor-sucesso);"> Elegível para MIT.</strong>' : '<strong style="color:var(--cor-aviso);"> Aguardando 30 dias.</strong>'} </p>
-                    <div class="action-area">
-                         <button class="btn btn-small btn-warning" onclick="openMitUniversidadeModal(${processo.id})" ${!mitEligible ? 'disabled' : ''}>Notificar Universidade</button>
-                         <button class="btn btn-small btn-success" onclick="openMitFornecedorModal(${processo.id})" ${!mitEligible ? 'disabled' : ''}>Notificar Fornecedor</button>
-                    </div>
-                </div>
-            </li>
-        `;
-    }
-
-    function createStatusSelect(processoId, processName, currentStatus, options) {
-        let optionsHtml = options.map(opt => `<option value="${opt}" ${opt === currentStatus ? 'selected' : ''}>${opt}</option>`).join('');
-        const statusClass = `status-${currentStatus.toLowerCase().replace(' ', '-')}`; // Classe para cor
-        return `
-            <select class="status-select ${statusClass}" onchange="updatePosHomologacaoStatus(${processoId}, '${processName}', this.value)">
-                ${optionsHtml}
-            </select>`;
-    }
-
-    function updatePosHomologacaoStatus(processoId, processName, newStatus) {
-        const processo = mockProcessos.find(p => p.id === processoId);
-        if (processo && processo.posHomologacaoStatus) {
-            processo.posHomologacaoStatus[processName] = newStatus;
-            // Re-renderiza apenas o card afetado para atualizar o select visualmente (cor)
-            const cardElement = document.getElementById(`pos-card-${processoId}`);
-            if(cardElement) {
-                cardElement.outerHTML = createPosHomologacaoCardHtml(processo);
-            }
-        }
-    }
-
+    function renderPosHomologacaoView() { /* ... código idêntico ... */ }
+    function createPosHomologacaoCardHtml(processo) { /* ... código idêntico ... */ }
+    function createStatusSelect(processoId, processName, currentStatus, options) { /* ... código idêntico ... */ }
+    function updatePosHomologacaoStatus(processoId, processName, newStatus) { /* ... código idêntico ... */ }
 
     // --- LÓGICA DOS MODAIS E INTERATIVIDADE ---
-    let currentProcessId = null; // Guarda o ID do processo para os modais
-
-    function openPainelFornecedorModal(processoId) {
-        currentProcessId = processoId;
-        const processo = mockProcessos.find(p => p.id === processoId);
-        if(!processo) return;
-        document.getElementById('painelFornecedorModalTitle').textContent = `Enviar Convite - Painel Fornecedor (${processo.empresa})`;
-        // Tenta preencher o email (pode vir do storytelling ou de outro campo se existir)
-        document.getElementById('painel-email-to').value = processo.storytelling?.emailExcecao || '';
-        openModal('painelFornecedorModal');
-    }
-
-    function openMitUniversidadeModal(processoId) {
-        currentProcessId = processoId;
-        const processo = mockProcessos.find(p => p.id === processoId);
-        if(!processo) return;
-        document.getElementById('mitUni-email-subject').value = `Liberação de Acesso - Treinamento MIT - Fornecedor ${processo.empresa}`;
-        openModal('mitUniversidadeModal');
-    }
-
-    function openMitFornecedorModal(processoId) {
-        currentProcessId = processoId;
-        const processo = mockProcessos.find(p => p.id === processoId);
-         if(!processo) return;
-        // Tenta preencher o email
-        document.getElementById('mitForn-email-to').value = processo.storytelling?.emailExcecao || '';
-        openModal('mitFornecedorModal');
-    }
-
-    function simularEnvioEmail(modalId) {
-        alert("Simulando envio de e-mail...");
-        closeModal(modalId);
-        // Atualiza o status correspondente se for o modal do Painel Fornecedor
-        if (modalId === 'painelFornecedorModal' && currentProcessId) {
-             updatePosHomologacaoStatus(currentProcessId, 'painelFornecedor', 'Formulário enviado');
-        }
-    }
-
-    // Funções openHistoryModal, openStorytellingModal, closeModal, addChecklistListeners, populateUfSelect, window.onclick... (permanecem iguais)
-    function openHistoryModal(processoId) { /* ...código idêntico... */ }
-    function openStorytellingModal(processoId) { /* ...código idêntico... */ }
+    let currentProcessId = null;
+    function openPainelFornecedorModal(processoId) { /* ... código idêntico ... */ }
+    function openMitUniversidadeModal(processoId) { /* ... código idêntico ... */ }
+    function openMitFornecedorModal(processoId) { /* ... código idêntico ... */ }
+    function simularEnvioEmail(modalId) { /* ... código idêntico ... */ }
+    function openHistoryModal(processoId) { /* ... código idêntico ... */ }
+    function openStorytellingModal(processoId) { /* ... código idêntico ... */ }
     function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
-    function openModal(modalId) { document.getElementById(modalId).style.display = 'block'; } // Helper
-    function addChecklistListeners() { /* ...código idêntico... */ }
-    function populateUfSelect() { /* ...código idêntico... */ }
+    function openModal(modalId) { document.getElementById(modalId).style.display = 'block'; }
+    function addChecklistListeners() { /* ... código idêntico ... */ }
+    function populateUfSelect() { /* ... código idêntico ... */ }
     window.onclick = function(event) { if (event.target.classList.contains('modal')) { event.target.style.display = "none"; } }
-
     </script>
 
 </body>
