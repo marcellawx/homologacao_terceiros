@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protótipo - Painel do Fornecedor</title>
+    <style>
+        :root {
+            --cor-primaria: #0072C6;
+            --cor-sucesso: #28a745;
+            --cor-perigo: #dc3545;
+            --cor-aviso: #FFC107;
+            --cor-info: #6f42c1;
+            --cor-fundo: #F4F7FC;
+            --cor-texto: #333;
+            --cor-texto-claro: #f8f9fa;
+            --cor-borda: #DEE2E6;
+            --cor-cabecalho: #002233;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--cor-fundo);
+            margin: 0;
+            padding: 0;
+            color: var(--cor-texto);
+        }
+        
+        /* --- CABEÇALHO (Simulação Fluig/Portal) --- */
+        .portal-header {
+            background-color: var(--cor-cabecalho);
+            color: var(--cor-texto-claro);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .portal-header .logo {
+            font-size: 22px;
+            font-weight: bold;
+        }
+        .portal-header .user-info {
+            font-size: 16px;
+        }
+        .portal-header .user-info a {
+            color: var(--cor-aviso);
+            text-decoration: none;
+            margin-left: 10px;
+        }
+        
+        /* --- Contêiner Principal --- */
+        .page-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        
+        /* --- NAVEGAÇÃO PRINCIPAL (Abas) --- */
+        .main-nav {
+            border-bottom: 2px solid var(--cor-borda);
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .main-nav-btn {
+            background-color: transparent;
+            border: none;
+            padding: 15px 25px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            color: #555;
+            border-bottom: 4px solid transparent;
+            transition: all 0.2s ease;
+        }
+        .main-nav-btn.active {
+            color: var(--cor-primaria);
+            border-bottom-color: var(--cor-primaria);
+        }
+        
+        .main-tab-content {
+            display: none;
+        }
+        .main-tab-content.active {
+            display: block;
+        }
+        
+        /* --- SUB-NAVEGAÇÃO (Painel Fornecedor) --- */
+        .sub-nav {
+            background-color: #fff;
+            border-radius: 8px 8px 0 0;
+            border: 1px solid var(--cor-borda);
+            border-bottom: 2px solid var(--cor-primaria);
+            padding: 10px 10px 0 10px;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .sub-nav-btn {
+            background-color: #f8f9fa;
+            border: 1px solid var(--cor-borda);
+            border-bottom: none;
+            padding: 12px 20px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            color: var(--cor-primaria);
+            border-radius: 6px 6px 0 0;
+            margin-right: 5px;
+            margin-bottom: -1px; /* Para sobrepor a borda */
+        }
+        .sub-nav-btn.active {
+            background-color: #fff;
+            border-bottom: 1px solid #fff;
+            color: var(--cor-texto);
+            font-weight: bold;
+        }
+        
+        .sub-tab-content {
+            display: none;
+        }
+        .sub-tab-content.active {
+            display: block;
+        }
+        
+        /* --- ESTILO DOS CARDS DE CONTEÚDO --- */
+        .content-card {
+            background-color: #FFF;
+            padding: 25px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid var(--cor-borda);
+        }
+        /* Card especial para a sub-navegação */
+        .content-card.sub-nav-container {
+            border-radius: 0 0 8px 8px;
+            border-top: none;
+        }
+        
+        h2 {
+            font-size: 22px;
+            color: var(--cor-primaria);
+            margin-top: 0;
+            border-bottom: 1px solid var(--cor-borda);
+            padding-bottom: 10px;
+        }
+        
+        /* --- Componentes --- */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+        .btn-primary { background-color: var(--cor-primaria); }
+        .btn-success { background-color: var(--cor-sucesso); }
+        
+        .info-list {
+            list-style: none;
+            padding: 0;
+        }
+        .info-list li {
+            font-size: 16px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .info-list li strong {
+            color: #333;
+            min-width: 200px;
+            display: inline-block;
+        }
+        
+        .simple-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .simple-table th, .simple-table td {
+            padding: 12px;
+            border: 1px solid var(--cor-borda);
+            text-align: left;
+        }
+        .simple-table th {
+            background-color: #f8f9fa;
+        }
+        .status-aprovado { color: var(--cor-sucesso); font-weight: bold; }
+        .status-pendente { color: var(--cor-aviso); font-weight: bold; }
+        .status-valido { color: var(--cor-sucesso); }
+        .status-expirando { color: var(--cor-aviso); font-weight: bold; }
+
+    </style>
+</head>
+<body>
+
+    <header class="portal-header">
+        <div class="logo">PORTAL DO FORNECEDOR</div>
+        <div class="user-info">
+            <span>Olá, <strong>ACME Soluções de TI</strong></span>
+            <a href="#">Sair</a>
+        </div>
+    </header>
+
+    <div class="page-container">
+        
+        <nav class="main-nav">
+            <button class="main-nav-btn active" onclick="openMainTab(event, 'meu-contrato')">Meu Contrato</button>
+            <button class="main-nav-btn" onclick="openMainTab(event, 'painel-fornecedor')">Painel Fornecedor</button>
+            <button class="main-nav-btn" onclick="openMainTab(event, 'busca-recursos')">Busca de Recursos/Demandas</button>
+        </nav>
+
+        <main class="main-content">
+            
+            <!-- ======================= -->
+            <!-- ABA 1: MEU CONTRATO -->
+            <!-- ======================= -->
+            <div id="meu-contrato" class="main-tab-content active">
+                <div class="content-card">
+                    <h2>Detalhes do Meu Contrato</h2>
+                    <ul class="info-list">
+                        <li><strong>Número do Contrato:</strong> <span>CTR-2024-1020</span></li>
+                        <li><strong>Tipo de Contrato:</strong> <span>Consultoria (Prestação de Serviços)</span></li>
+                        <li><strong>Data de Início:</strong> <span>20/10/2024</span></li>
+                        <li><strong>Próximo Reajuste (Aniversário):</strong> <span>20/10/2025</span></li>
+                        <li><strong>Status:</strong> <span class="status-aprovado">Ativo</span></li>
+                    </ul>
+                    <div style="margin-top: 20px; text-align: right;">
+                        <a href="#" class="btn btn-primary">Baixar Minuta do Contrato</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ======================= -->
+            <!-- ABA 2: PAINEL FORNECEDOR -->
+            <!-- ======================= -->
+            <div id="painel-fornecedor" class="main-tab-content">
+                
+                <nav class="sub-nav">
+                    <button class="sub-nav-btn active" onclick="openSubTab(event, 'controle-agendas')">Controle de Agendas</button>
+                    <button class="sub-nav-btn" onclick="openSubTab(event, 'relatorio-fechamento')">Relatório de Fechamento</button>
+                    <button class="sub-nav-btn" onclick="openSubTab(event, 'revalidacao-acessos')">Revalidação de Acessos</button>
+                    <button class="sub-nav-btn" onclick="openSubTab(event, 'treinamentos')">Treinamentos e Certificação</button>
+                </nav>
+
+                <div class="content-card sub-nav-container">
+                    
+                    <!-- Sub-Aba 2.1: Controle de Agendas -->
+                    <div id="controle-agendas" class="sub-tab-content active">
+                        <h2>Controle de Agendas</h2>
+                        <p>Visualize e gerencie as alocações da sua equipe.</p>
+                        <!-- Aqui entraria um componente de calendário real. Vamos simular. -->
+                        <table class="simple-table">
+                            <thead>
+                                <tr>
+                                    <th>Recurso</th>
+                                    <th>Projeto/Demanda</th>
+                                    <th>Data Início</th>
+                                    <th>Data Fim</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Ana Silva</td>
+                                    <td>Implantação Protheus - Cliente X</td>
+                                    <td>01/11/2025</td>
+                                    <td>30/11/2025</td>
+                                    <td class="status-aprovado">Confirmado</td>
+                                </tr>
+                                <tr>
+                                    <td>Bruno Costa</td>
+                                    <td>Projeto Y - Fluig</td>
+                                    <td>05/11/2025</td>
+                                    <td>15/11/2025</td>
+                                    <td class="status-aprovado">Confirmado</td>
+                                </tr>
+                                <tr>
+                                    <td>Carla Souza</td>
+                                    <td>Alocação Pendente (RH)</td>
+                                    <td>10/11/2025</td>
+                                    <td>-</td>
+                                    <td class="status-pendente">Aguardando Aprovação</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div style="margin-top: 20px; text-align: right;">
+                            <a href="#" class="btn btn-primary">Solicitar Nova Alocação</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Sub-Aba 2.2: Relatório de Fechamento -->
+                    <div id="relatorio-fechamento" class="sub-tab-content">
+                        <h2>Relatório de Fechamento</h2>
+                        <p>Envie seus relatórios mensais para aprovação e faturamento.</p>
+                        <div>
+                            <label for="periodo-filtro">Filtrar por Período:</label>
+                            <input type="month" id="periodo-filtro" value="2025-10" style="padding: 8px;">
+                        </div>
+                        <table class="simple-table">
+                            <thead>
+                                <tr>
+                                    <th>Período</th>
+                                    <th>Data de Envio</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Outubro/2025</td>
+                                    <td>02/11/2025</td>
+                                    <td class="status-pendente">Enviado (Aguardando Aprovação)</td>
+                                    <td><a href="#">Visualizar</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Setembro/2025</td>
+                                    <td>01/10/2025</td>
+                                    <td class="status-aprovado">Aprovado e Faturado</td>
+                                    <td><a href="#">Visualizar</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                         <div style="margin-top: 20px; text-align: right;">
+                            <a href="#" class="btn btn-success">Enviar Novo Relatório</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Sub-Aba 2.3: Revalidação de Acessos -->
+                    <div id="revalidacao-acessos" class="sub-tab-content">
+                        <h2>Revalidação de Acessos</h2>
+                        <p>Mantenha os acessos da sua equipe atualizados para evitar bloqueios.</p>
+                        <table class="simple-table">
+                            <thead>
+                                <tr>
+                                    <th>Recurso</th>
+                                    <th>E-mail</th>
+                                    <th>Acesso (VPN/Sistemas)</th>
+                                    <th>Expira em</th>
+                                    <th>Ação</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Ana Silva</td>
+                                    <td>ana.silva@acme.com</td>
+                                    <td class="status-valido">Válido</td>
+                                    <td>15/05/2026</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>Bruno Costa</td>
+                                    <td>bruno.costa@acme.com</td>
+                                    <td class="status-expirando">Perto de Expirar</td>
+                                    <td>28/11/2025</td>
+                                    <td><a href="#" class="btn btn-small btn-primary">Revalidar Agora</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Sub-Aba 2.4: Treinamentos e Certificação -->
+                    <div id="treinamentos" class="sub-tab-content">
+                        <h2>Treinamentos e Certificação</h2>
+                        <p>Acompanhe o status dos treinamentos obrigatórios (MIT) e certificações.</p>
+                        
+                        <h3>Treinamentos Obrigatórios</h3>
+                        <table class="simple-table">
+                             <thead>
+                                <tr>
+                                    <th>Treinamento</th>
+                                    <th>Status</th>
+                                    <th>Link</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>MIT - Meu Ingresso na TOTVS</td>
+                                    <td class="status-aprovado">Concluído (Equipe)</td>
+                                    <td><a href="#">Acessar Plataforma</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <h3 style="margin-top: 25px;">Certificações da Equipe</h3>
+                         <table class="simple-table">
+                            <thead>
+                                <tr>
+                                    <th>Recurso</th>
+                                    <th>Certificação</th>
+                                    <th>Validade</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Ana Silva</td>
+                                    <td>Certificação Protheus - Faturamento</td>
+                                    <td>01/01/2027</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                         <div style="margin-top: 20px; text-align: right;">
+                            <a href="#" class="btn btn-primary">Anexar Nova Certificação</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ======================= -->
+            <!-- ABA 3: BUSCA DE RECURSOS/DEMANDAS -->
+            <!-- ======================= -->
+            <div id="busca-recursos" class="main-tab-content">
+                <div class="content-card">
+                    <h2>Demandas Abertas (Oportunidades)</h2>
+                    <p>Encontre novas oportunidades de alocação para sua equipe.</p>
+                     <table class="simple-table">
+                            <thead>
+                                <tr>
+                                    <th>Demanda</th>
+                                    <th>Localidade</th>
+                                    <th>Período Estimado</th>
+                                    <th>Ação</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>[VAGA-105] Analista de Implantação Protheus Sênior (Financeiro)</td>
+                                    <td>Remoto</td>
+                                    <td>3 meses</td>
+                                    <td><a href="#" class="btn btn-small btn-success">Indicar Recurso</a></td>
+                                </tr>
+                                <tr>
+                                    <td>[VAGA-108] Desenvolvedor Fluig Pleno</td>
+                                    <td>São Paulo (Híbrido)</td>
+                                    <td>6 meses</td>
+                                    <td><a href="#" class="btn btn-small btn-success">Indicar Recurso</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                </div>
+            </div>
+            
+        </main>
+    </div>
+
+    <script>
+        // --- LÓGICA DAS ABAS ---
+        
+        // Define as abas ativas iniciais
+        let activeMainTab = 'meu-contrato';
+        let activeSubTab = 'controle-agendas';
+
+        // Função para trocar de ABA PRINCIPAL
+        function openMainTab(evt, tabName) {
+            // Esconde todos os conteúdos principais
+            document.querySelectorAll('.main-tab-content').forEach(tab => tab.style.display = "none");
+            
+            // Remove 'active' de todos os botões principais
+            document.querySelectorAll('.main-nav-btn').forEach(btn => btn.classList.remove('active'));
+            
+            // Mostra o conteúdo da aba clicada e ativa o botão
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.classList.add('active');
+            activeMainTab = tabName;
+        }
+        
+        // Função para trocar de SUB-ABA (dentro do Painel Fornecedor)
+        function openSubTab(evt, tabName) {
+            // Esconde todos os conteúdos da sub-aba
+            document.querySelectorAll('.sub-tab-content').forEach(tab => tab.style.display = "none");
+            
+            // Remove 'active' de todos os botões da sub-aba
+            document.querySelectorAll('.sub-nav-btn').forEach(btn => btn.classList.remove('active'));
+            
+            // Mostra o conteúdo da sub-aba clicada e ativa o botão
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.classList.add('active');
+            activeSubTab = tabName;
+        }
+
+        // Define o estado inicial ao carregar a página
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById(activeMainTab).style.display = "block";
+            document.getElementById(activeSubTab).style.display = "block";
+        });
+    </script>
+</body>
+</html>
