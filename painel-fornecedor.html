@@ -35,22 +35,13 @@
             align-items: center;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-        .portal-header .logo {
-            font-size: 22px;
-            font-weight: bold;
-        }
-        .portal-header .user-info {
-            font-size: 16px;
-        }
-        .portal-header .user-info a {
-            color: var(--cor-aviso);
-            text-decoration: none;
-            margin-left: 10px;
-        }
+        .portal-header .logo { font-size: 22px; font-weight: bold; }
+        .portal-header .user-info { font-size: 16px; }
+        .portal-header .user-info a { color: var(--cor-aviso); text-decoration: none; margin-left: 10px; }
         
         /* --- Contêiner Principal --- */
         .page-container {
-            max-width: 1200px;
+            max-width: 1400px; /* Aumentado para acomodar tabelas largas */
             margin: 20px auto;
             padding: 20px;
         }
@@ -62,134 +53,108 @@
             text-align: center;
         }
         .main-nav-btn {
-            background-color: transparent;
-            border: none;
-            padding: 15px 25px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            color: #555;
-            border-bottom: 4px solid transparent;
-            transition: all 0.2s ease;
+            background-color: transparent; border: none; padding: 15px 25px;
+            font-size: 18px; font-weight: 600; cursor: pointer; color: #555;
+            border-bottom: 4px solid transparent; transition: all 0.2s ease;
         }
-        .main-nav-btn.active {
-            color: var(--cor-primaria);
-            border-bottom-color: var(--cor-primaria);
-        }
+        .main-nav-btn.active { color: var(--cor-primaria); border-bottom-color: var(--cor-primaria); }
         
-        .main-tab-content {
-            display: none;
-        }
-        .main-tab-content.active {
-            display: block;
-        }
+        .main-tab-content { display: none; }
+        .main-tab-content.active { display: block; }
         
         /* --- SUB-NAVEGAÇÃO (Painel Fornecedor) --- */
         .sub-nav {
-            background-color: #fff;
-            border-radius: 8px 8px 0 0;
-            border: 1px solid var(--cor-borda);
-            border-bottom: 2px solid var(--cor-primaria);
-            padding: 10px 10px 0 10px;
-            display: flex;
-            flex-wrap: wrap;
+            background-color: #fff; border-radius: 8px 8px 0 0; border: 1px solid var(--cor-borda);
+            border-bottom: 2px solid var(--cor-primaria); padding: 10px 10px 0 10px;
+            display: flex; flex-wrap: wrap;
         }
         .sub-nav-btn {
-            background-color: #f8f9fa;
-            border: 1px solid var(--cor-borda);
-            border-bottom: none;
-            padding: 12px 20px;
-            font-size: 15px;
-            font-weight: 500;
-            cursor: pointer;
-            color: var(--cor-primaria);
-            border-radius: 6px 6px 0 0;
-            margin-right: 5px;
-            margin-bottom: -1px; /* Para sobrepor a borda */
+            background-color: #f8f9fa; border: 1px solid var(--cor-borda); border-bottom: none;
+            padding: 12px 20px; font-size: 15px; font-weight: 500; cursor: pointer;
+            color: var(--cor-primaria); border-radius: 6px 6px 0 0; margin-right: 5px;
+            margin-bottom: -1px; 
         }
         .sub-nav-btn.active {
-            background-color: #fff;
-            border-bottom: 1px solid #fff;
-            color: var(--cor-texto);
-            font-weight: bold;
+            background-color: #fff; border-bottom: 1px solid #fff;
+            color: var(--cor-texto); font-weight: bold;
         }
         
-        .sub-tab-content {
-            display: none;
-        }
-        .sub-tab-content.active {
-            display: block;
-        }
+        .sub-tab-content { display: none; }
+        .sub-tab-content.active { display: block; }
         
         /* --- ESTILO DOS CARDS DE CONTEÚDO --- */
         .content-card {
-            background-color: #FFF;
-            padding: 25px 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            border: 1px solid var(--cor-borda);
+            background-color: #FFF; padding: 25px 30px; border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--cor-borda);
         }
-        /* Card especial para a sub-navegação */
-        .content-card.sub-nav-container {
-            border-radius: 0 0 8px 8px;
-            border-top: none;
-        }
+        .content-card.sub-nav-container { border-radius: 0 0 8px 8px; border-top: none; }
         
         h2 {
-            font-size: 22px;
-            color: var(--cor-primaria);
-            margin-top: 0;
-            border-bottom: 1px solid var(--cor-borda);
-            padding-bottom: 10px;
+            font-size: 22px; color: var(--cor-primaria); margin-top: 0;
+            border-bottom: 1px solid var(--cor-borda); padding-bottom: 10px;
         }
         
         /* --- Componentes --- */
         .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
+            padding: 6px 12px; /* Reduzido para parecer com o Dynamics */
+            border: 1px solid transparent;
+            border-radius: 4px;
+            font-size: 14px;
             cursor: pointer;
             text-decoration: none;
             display: inline-block;
             color: white;
             transition: background-color 0.3s ease;
+            background-color: var(--cor-primaria);
+            border-color: #0069d9;
         }
-        .btn-primary { background-color: var(--cor-primaria); }
-        .btn-success { background-color: var(--cor-sucesso); }
+        .btn-success { background-color: var(--cor-sucesso); border-color: #218838; }
+        .btn-small { padding: 5px 10px; font-size: 12px; }
         
-        .info-list {
-            list-style: none;
-            padding: 0;
+        .action-bar {
+            background-color: #f8f9fa;
+            padding: 10px 15px;
+            border-bottom: 1px solid var(--cor-borda);
+            margin-bottom: 15px;
         }
-        .info-list li {
-            font-size: 16px;
-            padding: 12px 0;
-            border-bottom: 1px solid #f0f0f0;
+        .action-bar .btn {
+            margin-right: 5px;
+            background-color: #e9ecef;
+            color: var(--cor-texto);
+            border-color: #ccc;
         }
-        .info-list li strong {
-            color: #333;
-            min-width: 200px;
-            display: inline-block;
-        }
+         .action-bar .btn:hover { background-color: #ddd; }
+
+        .info-list { list-style: none; padding: 0; }
+        .info-list li { font-size: 16px; padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
+        .info-list li strong { color: #333; min-width: 200px; display: inline-block; }
         
-        .simple-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
+        .simple-table { width: 100%; border-collapse: collapse; margin-top: 5px; }
         .simple-table th, .simple-table td {
-            padding: 12px;
+            padding: 10px 8px; /* Ajustado */
             border: 1px solid var(--cor-borda);
             text-align: left;
+            font-size: 14px; /* Padronizado */
         }
         .simple-table th {
             background-color: #f8f9fa;
+            font-weight: 600; /* Mais parecido com Dynamics */
+            padding-top: 12px;
+            padding-bottom: 12px;
         }
+        /* Nova classe para filtros de tabela */
+        .table-filter-row input {
+            width: 95%;
+            padding: 6px 8px;
+            border: 1px solid var(--cor-borda);
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
         .status-aprovado { color: var(--cor-sucesso); font-weight: bold; }
         .status-pendente { color: var(--cor-aviso); font-weight: bold; }
-        .status-valido { color: var(--cor-sucesso); }
-        .status-expirando { color: var(--cor-aviso); font-weight: bold; }
+        .status-verificado { color: var(--cor-sucesso); }
+        .status-revalidar { color: var(--cor-perigo); font-weight: bold; }
 
     </style>
 </head>
@@ -207,15 +172,13 @@
         
         <nav class="main-nav">
             <button class="main-nav-btn active" onclick="openMainTab(event, 'meu-contrato')">Meu Contrato</button>
+            <button class="main-nav-btn" onclick="openMainTab(event, 'meus-recursos')">Meus Recursos</button>
             <button class="main-nav-btn" onclick="openMainTab(event, 'painel-fornecedor')">Painel Fornecedor</button>
-            <button class="main-nav-btn" onclick="openMainTab(event, 'busca-recursos')">Busca de Recursos/Demandas</button>
+            <button class="main-nav-btn" onclick="openMainTab(event, 'busca-recursos')">Busca de Demandas</button>
         </nav>
 
         <main class="main-content">
             
-            <!-- ======================= -->
-            <!-- ABA 1: MEU CONTRATO -->
-            <!-- ======================= -->
             <div id="meu-contrato" class="main-tab-content active">
                 <div class="content-card">
                     <h2>Detalhes do Meu Contrato</h2>
@@ -231,167 +194,207 @@
                     </div>
                 </div>
             </div>
+            
+            <div id="meus-recursos" class="main-tab-content">
+                <div class="content-card">
+                    <h2>Meus Recursos Ativos</h2>
+                    <p>Um painel centralizado para gerenciar todos os seus recursos cadastrados.</p>
+                    <table class="simple-table">
+                        <thead>
+                            <tr>
+                                <th>Recurso (Nome)</th>
+                                <th>E-mail</th>
+                                <th>Posição / Competência</th>
+                                <th>Status E-mail</th>
+                                <th>Status Treinamento MIT</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recursos-dashboard-body">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
 
-            <!-- ======================= -->
-            <!-- ABA 2: PAINEL FORNECEDOR -->
-            <!-- ======================= -->
             <div id="painel-fornecedor" class="main-tab-content">
                 
                 <nav class="sub-nav">
                     <button class="sub-nav-btn active" onclick="openSubTab(event, 'controle-agendas')">Controle de Agendas</button>
                     <button class="sub-nav-btn" onclick="openSubTab(event, 'relatorio-fechamento')">Relatório de Fechamento</button>
-                    <button class="sub-nav-btn" onclick="openSubTab(event, 'revalidacao-acessos')">Revalidação de Acessos</button>
+                    <button class="sub-nav-btn" onclick="openSubTab(event, 'revalidacao-email')">Revalidação de Email</button>
                     <button class="sub-nav-btn" onclick="openSubTab(event, 'treinamentos')">Treinamentos e Certificação</button>
                 </nav>
 
                 <div class="content-card sub-nav-container">
                     
-                    <!-- Sub-Aba 2.1: Controle de Agendas -->
                     <div id="controle-agendas" class="sub-tab-content active">
-                        <h2>Controle de Agendas</h2>
-                        <p>Visualize e gerencie as alocações da sua equipe.</p>
-                        <!-- Aqui entraria um componente de calendário real. Vamos simular. -->
+                        <h2>Entradas de Horas</h2>
+                        <div class="action-bar">
+                            <button class="btn">Excel</button>
+                            <button class="btn">Enviar</button>
+                            <button class="btn">Buscar</button>
+                            <button class="btn">Limpar</button>
+                        </div>
                         <table class="simple-table">
                             <thead>
                                 <tr>
                                     <th>Recurso</th>
-                                    <th>Projeto/Demanda</th>
-                                    <th>Data Início</th>
-                                    <th>Data Fim</th>
+                                    <th>Data</th>
+                                    <th>Início</th>
+                                    <th>Fim</th>
+                                    <th>Duração</th>
                                     <th>Status</th>
+                                    <th>Projeto</th>
+                                    <th>Tarefa</th>
+                                    <th>Nome Coordenador do Projeto</th>
+                                    <th>Unidade Organizacional</th>
                                 </tr>
                             </thead>
+                             <tr class="table-filter-row">
+                                <td><input type="text"></td>
+                                <td><input type="text"></td>
+                                <td><input type="text"></td>
+                                <td><input type="text"></td>
+                                <td><input type="text"></td>
+                                <td><input type="text"></td>
+                                <td><input type="text"></td>
+                                <td><input type="text"></td>
+                                <td><input type="text"></td>
+                                <td><input type="text"></td>
+                            </tr>
                             <tbody>
                                 <tr>
                                     <td>Ana Silva</td>
-                                    <td>Implantação Protheus - Cliente X</td>
-                                    <td>01/11/2025</td>
-                                    <td>30/11/2025</td>
-                                    <td class="status-aprovado">Confirmado</td>
-                                </tr>
-                                <tr>
-                                    <td>Bruno Costa</td>
-                                    <td>Projeto Y - Fluig</td>
                                     <td>05/11/2025</td>
-                                    <td>15/11/2025</td>
-                                    <td class="status-aprovado">Confirmado</td>
+                                    <td>09:00</td>
+                                    <td>18:00</td>
+                                    <td>8,00</td>
+                                    <td class="status-aprovado">Aprovado</td>
+                                    <td>P-001 - Cliente X</td>
+                                    <td>Implantação Financeiro</td>
+                                    <td>Renato Ormelezzi</td>
+                                    <td>Serviços SP</td>
+                                </tr>
+                                 <tr>
+                                    <td>Bruno Costa</td>
+                                    <td>05/11/2025</td>
+                                    <td>09:00</td>
+                                    <td>18:00</td>
+                                    <td>8,00</td>
+                                    <td class="status-pendente">Pendente</td>
+                                    <td>P-002 - Cliente Y</td>
+                                    <td>Desenvolvimento Fluig</td>
+                                    <td>Fernanda Batista</td>
+                                    <td>Serviços SP</td>
                                 </tr>
                                 <tr>
-                                    <td>Carla Souza</td>
-                                    <td>Alocação Pendente (RH)</td>
-                                    <td>10/11/2025</td>
-                                    <td>-</td>
-                                    <td class="status-pendente">Aguardando Aprovação</td>
+                                    <td>Ana Silva</td>
+                                    <td>06/11/2025</td>
+                                    <td>09:00</td>
+                                    <td>17:00</td>
+                                    <td>7,00</td>
+                                    <td class="status-pendente">Pendente</td>
+                                    <td>P-001 - Cliente X</td>
+                                    <td>Implantação Financeiro</td>
+                                    <td>Renato Ormelezzi</td>
+                                    <td>Serviços SP</td>
                                 </tr>
                             </tbody>
                         </table>
-                        <div style="margin-top: 20px; text-align: right;">
-                            <a href="#" class="btn btn-primary">Solicitar Nova Alocação</a>
-                        </div>
                     </div>
                     
-                    <!-- Sub-Aba 2.2: Relatório de Fechamento -->
                     <div id="relatorio-fechamento" class="sub-tab-content">
-                        <h2>Relatório de Fechamento</h2>
-                        <p>Envie seus relatórios mensais para aprovação e faturamento.</p>
-                        <div>
-                            <label for="periodo-filtro">Filtrar por Período:</label>
-                            <input type="month" id="periodo-filtro" value="2025-10" style="padding: 8px;">
+                        <h2>Composições de Fechamento</h2>
+                        <div class="action-bar">
+                            <button class="btn">Excel</button>
+                            <button class="btn">Buscar</button>
+                            <button class="btn">Limpar</button>
+                            <button class="btn">Atualizar</button>
                         </div>
-                        <table class="simple-table">
+                         <table class="simple-table">
                             <thead>
                                 <tr>
-                                    <th>Período</th>
-                                    <th>Data de Envio</th>
+                                    <th>Competência</th>
+                                    <th>Número Composição</th>
+                                    <th>Unidade Organizacional</th>
+                                    <th>Valor Escopo Fechado</th>
+                                    <th>Valor Apontamentos</th>
+                                    <th>Valor Total</th>
+                                    <th>Quantidade Horas</th>
                                     <th>Status</th>
-                                    <th>Ações</th>
                                 </tr>
                             </thead>
+                             <tr class="table-filter-row">
+                                <td><input type="text"></td>
+                                <td><input type="text"></td>
+                                <td><input type="text"></td>
+                                <td><input type="text"></td>
+                                <td><input type="text"></td>
+                                <td><input type="text"></td>
+                                <td><input type="text"></td>
+                                <td><input type="text"></td>
+                            </tr>
                             <tbody>
                                 <tr>
                                     <td>Outubro/2025</td>
-                                    <td>02/11/2025</td>
-                                    <td class="status-pendente">Enviado (Aguardando Aprovação)</td>
-                                    <td><a href="#">Visualizar</a></td>
+                                    <td>C-00123</td>
+                                    <td>Serviços SP</td>
+                                    <td>R$ 0,00</td>
+                                    <td>R$ 25.000,00</td>
+                                    <td>R$ 25.000,00</td>
+                                    <td>160,00</td>
+                                    <td class="status-pendente">Pendente Aprovação</td>
                                 </tr>
                                 <tr>
                                     <td>Setembro/2025</td>
-                                    <td>01/10/2025</td>
-                                    <td class="status-aprovado">Aprovado e Faturado</td>
-                                    <td><a href="#">Visualizar</a></td>
+                                    <td>C-00101</td>
+                                    <td>Serviços SP</td>
+                                    <td>R$ 0,00</td>
+                                    <td>R$ 22.000,00</td>
+                                    <td>R$ 22.000,00</td>
+                                    <td>140,00</td>
+                                    <td class="status-aprovado">Aprovado</td>
                                 </tr>
                             </tbody>
                         </table>
-                         <div style="margin-top: 20px; text-align: right;">
-                            <a href="#" class="btn btn-success">Enviar Novo Relatório</a>
-                        </div>
                     </div>
                     
-                    <!-- Sub-Aba 2.3: Revalidação de Acessos -->
-                    <div id="revalidacao-acessos" class="sub-tab-content">
-                        <h2>Revalidação de Acessos</h2>
-                        <p>Mantenha os acessos da sua equipe atualizados para evitar bloqueios.</p>
+                    <div id="revalidacao-email" class="sub-tab-content">
+                        <h2>Revalidação de Email</h2>
+                        <p>Gerencie os e-mails dos seus recursos para garantir que estejam sempre atualizados.</p>
                         <table class="simple-table">
                             <thead>
                                 <tr>
                                     <th>Recurso</th>
                                     <th>E-mail</th>
-                                    <th>Acesso (VPN/Sistemas)</th>
-                                    <th>Expira em</th>
+                                    <th>Status</th>
                                     <th>Ação</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Ana Silva</td>
-                                    <td>ana.silva@acme.com</td>
-                                    <td class="status-valido">Válido</td>
-                                    <td>15/05/2026</td>
-                                    <td>-</td>
-                                </tr>
-                                <tr>
-                                    <td>Bruno Costa</td>
-                                    <td>bruno.costa@acme.com</td>
-                                    <td class="status-expirando">Perto de Expirar</td>
-                                    <td>28/11/2025</td>
-                                    <td><a href="#" class="btn btn-small btn-primary">Revalidar Agora</a></td>
-                                </tr>
-                            </tbody>
+                            <tbody id="revalidacao-body">
+                                </tbody>
                         </table>
                     </div>
                     
-                    <!-- Sub-Aba 2.4: Treinamentos e Certificação -->
                     <div id="treinamentos" class="sub-tab-content">
                         <h2>Treinamentos e Certificação</h2>
                         <p>Acompanhe o status dos treinamentos obrigatórios (MIT) e certificações.</p>
                         
-                        <h3>Treinamentos Obrigatórios</h3>
+                        <h3>Acompanhamento de Treinamentos Obrigatórios (MIT)</h3>
                         <table class="simple-table">
                              <thead>
                                 <tr>
-                                    <th>Treinamento</th>
-                                    <th>Status</th>
-                                    <th>Link</th>
+                                    <th>Recurso</th>
+                                    <th>E-mail</th>
+                                    <th>Status Treinamento MIT</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td>MIT - Meu Ingresso na TOTVS</td>
-                                    <td class="status-aprovado">Concluído (Equipe)</td>
-                                    <td><a href="#">Acessar Plataforma</a></td>
-                                </tr>
-                            </tbody>
+                            <tbody id="treinamentos-body">
+                                </tbody>
                         </table>
                         
-                        <h3 style="margin-top: 25px;">Certificações da Equipe</h3>
+                        <h3 style="margin-top: 25px;">Certificações Adicionais da Equipe</h3>
                          <table class="simple-table">
-                            <thead>
-                                <tr>
-                                    <th>Recurso</th>
-                                    <th>Certificação</th>
-                                    <th>Validade</th>
-                                </tr>
-                            </thead>
+                            <thead> <tr> <th>Recurso</th> <th>Certificação</th> <th>Validade</th> </tr> </thead>
                             <tbody>
                                 <tr>
                                     <td>Ana Silva</td>
@@ -407,36 +410,26 @@
                 </div>
             </div>
 
-            <!-- ======================= -->
-            <!-- ABA 3: BUSCA DE RECURSOS/DEMANDAS -->
-            <!-- ======================= -->
             <div id="busca-recursos" class="main-tab-content">
                 <div class="content-card">
                     <h2>Demandas Abertas (Oportunidades)</h2>
                     <p>Encontre novas oportunidades de alocação para sua equipe.</p>
                      <table class="simple-table">
-                            <thead>
-                                <tr>
-                                    <th>Demanda</th>
-                                    <th>Localidade</th>
-                                    <th>Período Estimado</th>
-                                    <th>Ação</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>[VAGA-105] Analista de Implantação Protheus Sênior (Financeiro)</td>
-                                    <td>Remoto</td>
-                                    <td>3 meses</td>
-                                    <td><a href="#" class="btn btn-small btn-success">Indicar Recurso</a></td>
-                                </tr>
-                                <tr>
-                                    <td>[VAGA-108] Desenvolvedor Fluig Pleno</td>
-                                    <td>São Paulo (Híbrido)</td>
-                                    <td>6 meses</td>
-                                    <td><a href="#" class="btn btn-small btn-success">Indicar Recurso</a></td>
-                                </tr>
-                            </tbody>
+                        <thead> <tr> <th>Demanda</th> <th>Localidade</th> <th>Período Estimado</th> <th>Ação</th> </tr> </thead>
+                        <tbody>
+                            <tr>
+                                <td>[VAGA-105] Analista de Implantação Protheus Sênior (Financeiro)</td>
+                                <td>Remoto</td>
+                                <td>3 meses</td>
+                                <td><a href="#" class="btn btn-small btn-success">Indicar Recurso</a></td>
+                            </tr>
+                            <tr>
+                                <td>[VAGA-108] Desenvolvedor Fluig Pleno</td>
+                                <td>São Paulo (Híbrido)</td>
+                                <td>6 meses</td>
+                                <td><a href="#" class="btn btn-small btn-success">Indicar Recurso</a></td>
+                            </tr>
+                        </tbody>
                         </table>
                 </div>
             </div>
@@ -445,44 +438,126 @@
     </div>
 
     <script>
+        // --- BANCO DE DADOS (MOCK) ---
+        // Fonte única de verdade para os recursos
+        const mockRecursos = [
+            {
+                id: 1,
+                nome: "Ana Silva",
+                email: "ana.silva@acme.com",
+                posicao: "Consultora Protheus Sênior",
+                statusEmail: "Verificado",
+                statusTreinamento: "Concluído"
+            },
+            {
+                id: 2,
+                nome: "Bruno Costa",
+                email: "bruno.costa@acme.com",
+                posicao: "Desenvolvedor Fluig Pleno",
+                statusEmail: "Verificado",
+                statusTreinamento: "Em Andamento"
+            },
+            {
+                id: 3,
+                nome: "Carla Souza",
+                email: "carla.souza@acme.com",
+                posicao: "Analista de RH Júnior",
+                statusEmail: "Revalidar",
+                statusTreinamento: "Não Iniciado"
+            }
+        ];
+
         // --- LÓGICA DAS ABAS ---
         
-        // Define as abas ativas iniciais
         let activeMainTab = 'meu-contrato';
         let activeSubTab = 'controle-agendas';
 
-        // Função para trocar de ABA PRINCIPAL
         function openMainTab(evt, tabName) {
-            // Esconde todos os conteúdos principais
             document.querySelectorAll('.main-tab-content').forEach(tab => tab.style.display = "none");
-            
-            // Remove 'active' de todos os botões principais
             document.querySelectorAll('.main-nav-btn').forEach(btn => btn.classList.remove('active'));
-            
-            // Mostra o conteúdo da aba clicada e ativa o botão
             document.getElementById(tabName).style.display = "block";
             evt.currentTarget.classList.add('active');
             activeMainTab = tabName;
         }
         
-        // Função para trocar de SUB-ABA (dentro do Painel Fornecedor)
         function openSubTab(evt, tabName) {
-            // Esconde todos os conteúdos da sub-aba
             document.querySelectorAll('.sub-tab-content').forEach(tab => tab.style.display = "none");
-            
-            // Remove 'active' de todos os botões da sub-aba
             document.querySelectorAll('.sub-nav-btn').forEach(btn => btn.classList.remove('active'));
-            
-            // Mostra o conteúdo da sub-aba clicada e ativa o botão
             document.getElementById(tabName).style.display = "block";
             evt.currentTarget.classList.add('active');
             activeSubTab = tabName;
         }
 
+        // --- RENDERIZAÇÃO DAS TABELAS DINÂMICAS (ESPELHADAS) ---
+        
+        function renderRevalidacaoEmail() {
+            const tbody = document.getElementById('revalidacao-body');
+            tbody.innerHTML = ''; // Limpa a tabela
+            mockRecursos.forEach(recurso => {
+                const statusClass = recurso.statusEmail === 'Verificado' ? 'status-verificado' : 'status-revalidar';
+                const acaoBotao = recurso.statusEmail === 'Revalidar' ? '<button class="btn btn-small btn-primary">Revalidar</button>' : '-';
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${recurso.nome}</td>
+                        <td>${recurso.email}</td>
+                        <td class="${statusClass}">${recurso.statusEmail}</td>
+                        <td>${acaoBotao}</td>
+                    </tr>
+                `;
+            });
+        }
+        
+        function renderTreinamentos() {
+            const tbody = document.getElementById('treinamentos-body');
+            tbody.innerHTML = ''; // Limpa a tabela
+            mockRecursos.forEach(recurso => {
+                let statusClass = '';
+                if(recurso.statusTreinamento === 'Concluído') statusClass = 'status-aprovado';
+                else if(recurso.statusTreinamento === 'Em Andamento') statusClass = 'status-pendente';
+                else statusClass = 'status-revalidar'; // Para "Não Iniciado"
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${recurso.nome}</td>
+                        <td>${recurso.email}</td>
+                        <td class="${statusClass}">${recurso.statusTreinamento}</td>
+                    </tr>
+                `;
+            });
+        }
+        
+        function renderMeusRecursos() {
+            const tbody = document.getElementById('recursos-dashboard-body');
+            tbody.innerHTML = ''; // Limpa a tabela
+            mockRecursos.forEach(recurso => {
+                const statusEmailClass = recurso.statusEmail === 'Verificado' ? 'status-verificado' : 'status-revalidar';
+                let statusTreinamentoClass = '';
+                if(recurso.statusTreinamento === 'Concluído') statusTreinamentoClass = 'status-aprovado';
+                else if(recurso.statusTreinamento === 'Em Andamento') statusTreinamentoClass = 'status-pendente';
+                else statusTreinamentoClass = 'status-revalidar';
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${recurso.nome}</td>
+                        <td>${recurso.email}</td>
+                        <td>${recurso.posicao}</td>
+                        <td class="${statusEmailClass}">${recurso.statusEmail}</td>
+                        <td class="${statusTreinamentoClass}">${recurso.statusTreinamento}</td>
+                    </tr>
+                `;
+            });
+        }
+
         // Define o estado inicial ao carregar a página
         document.addEventListener('DOMContentLoaded', () => {
+            // Ativa as abas padrão
             document.getElementById(activeMainTab).style.display = "block";
             document.getElementById(activeSubTab).style.display = "block";
+            
+            // Renderiza as tabelas dinâmicas
+            renderRevalidacaoEmail();
+            renderTreinamentos();
+            renderMeusRecursos();
         });
     </script>
 </body>
