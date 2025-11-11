@@ -62,7 +62,7 @@
         .main-tab-content { display: none; }
         .main-tab-content.active { display: block; }
         
-        /* --- SUB-NAVEGAÇÃO (Painel Fornecedor) --- */
+        /* --- SUB-NAVEGAÇÃO (Painel Fornecedor & Busca de Demandas) --- */
         .sub-nav {
             background-color: #fff; border-radius: 8px 8px 0 0; border: 1px solid var(--cor-borda);
             border-bottom: 2px solid var(--cor-primaria); padding: 10px 10px 0 10px;
@@ -96,7 +96,7 @@
         
         /* --- Componentes --- */
         .btn {
-            padding: 6px 12px; /* Reduzido para parecer com o Dynamics */
+            padding: 6px 12px;
             border: 1px solid transparent;
             border-radius: 4px;
             font-size: 14px;
@@ -131,18 +131,17 @@
         
         .simple-table { width: 100%; border-collapse: collapse; margin-top: 5px; }
         .simple-table th, .simple-table td {
-            padding: 10px 8px; /* Ajustado */
+            padding: 10px 8px;
             border: 1px solid var(--cor-borda);
             text-align: left;
-            font-size: 14px; /* Padronizado */
+            font-size: 14px;
         }
         .simple-table th {
             background-color: #f8f9fa;
-            font-weight: 600; /* Mais parecido com Dynamics */
+            font-weight: 600;
             padding-top: 12px;
             padding-bottom: 12px;
         }
-        /* Nova classe para filtros de tabela */
         .table-filter-row input {
             width: 95%;
             padding: 6px 8px;
@@ -155,6 +154,39 @@
         .status-pendente { color: var(--cor-aviso); font-weight: bold; }
         .status-verificado { color: var(--cor-sucesso); }
         .status-revalidar { color: var(--cor-perigo); font-weight: bold; }
+
+        /* --- NOVOS ESTILOS: ABA EQUIPE & MODAL CV --- */
+        .recurso-list { list-style: none; padding: 0; }
+        .recurso-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border: 1px solid var(--cor-borda);
+        }
+        .recurso-info h3 { margin: 0 0 5px 0; font-size: 18px; color: var(--cor-texto); }
+        .recurso-info p { margin: 0; font-size: 14px; color: #555; }
+        
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(5px); }
+        .modal-content { background-color: #fefefe; margin: 5% auto; padding: 30px; border: 1px solid #888; width: 90%; max-width: 700px; border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--cor-borda); padding-bottom: 15px; margin-bottom: 20px; }
+        .modal-header h2 { margin: 0; font-size: 20px; }
+        .close-btn { color: #aaa; font-size: 32px; font-weight: bold; cursor: pointer; }
+        
+        .form-group { display: flex; flex-direction: column; margin-bottom: 15px; }
+        .form-group label { margin-bottom: 5px; font-weight: bold; font-size: 14px; color: #333; }
+        .form-group input, .form-group textarea {
+             width: 100%; padding: 10px; border: 1px solid var(--cor-borda);
+             border-radius: 5px; font-size: 14px; box-sizing: border-box;
+             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .form-group textarea { min-height: 120px; resize: vertical; }
+        .form-group input:read-only { background-color: #f0f0f0; }
+        .modal-footer { margin-top: 25px; text-align: right; }
 
     </style>
 </head>
@@ -174,7 +206,7 @@
             <button class="main-nav-btn active" onclick="openMainTab(event, 'meu-contrato')">Meu Contrato</button>
             <button class="main-nav-btn" onclick="openMainTab(event, 'meus-recursos')">Meus Recursos</button>
             <button class="main-nav-btn" onclick="openMainTab(event, 'painel-fornecedor')">Painel Fornecedor</button>
-            <button class="main-nav-btn" onclick="openMainTab(event, 'busca-recursos')">Busca de Demandas</button>
+            <button class="main-nav-btn" onclick="openMainTab(event, 'busca-demandas')">Busca de Demandas</button>
         </nav>
 
         <main class="main-content">
@@ -186,9 +218,7 @@
                         <li><strong>Número do Contrato:</strong> <span>CTR-2024-1020</span></li>
                         <li><strong>Tipo de Contrato:</strong> <span>Consultoria (Prestação de Serviços)</span></li>
                         <li><strong>Data de Início:</strong> <span>20/10/2024</span></li>
-                        <li><strong>Próximo Reajuste (Aniversário):</strong> <span>20/10/2025</span></li>
-                        <li><strong>Status:</strong> <span class="status-aprovado">Ativo</span></li>
-                    </ul>
+                        </ul>
                     <div style="margin-top: 20px; text-align: right;">
                         <a href="#" class="btn btn-primary">Baixar Minuta do Contrato</a>
                     </div>
@@ -204,7 +234,6 @@
                             <tr>
                                 <th>Recurso (Nome)</th>
                                 <th>E-mail</th>
-                                <th>Posição / Competência</th>
                                 <th>Status E-mail</th>
                                 <th>Status Treinamento MIT</th>
                             </tr>
@@ -218,147 +247,89 @@
             <div id="painel-fornecedor" class="main-tab-content">
                 
                 <nav class="sub-nav">
-                    <button class="sub-nav-btn active" onclick="openSubTab(event, 'controle-agendas')">Controle de Agendas</button>
-                    <button class="sub-nav-btn" onclick="openSubTab(event, 'relatorio-fechamento')">Relatório de Fechamento</button>
-                    <button class="sub-nav-btn" onclick="openSubTab(event, 'revalidacao-email')">Revalidação de Email</button>
-                    <button class="sub-nav-btn" onclick="openSubTab(event, 'treinamentos')">Treinamentos e Certificação</button>
+                    <button class="sub-nav-btn active" onclick="openSubTab(event, 'painel-controle-agendas')">Controle de Agendas</button>
+                    <button class="sub-nav-btn" onclick="openSubTab(event, 'painel-relatorio-fechamento')">Relatório de Fechamento</button>
+                    <button class="sub-nav-btn" onclick="openSubTab(event, 'painel-revalidacao-email')">Revalidação de Email</button>
+                    <button class="sub-nav-btn" onclick="openSubTab(event, 'painel-treinamentos')">Treinamentos e Certificação</button>
                 </nav>
 
                 <div class="content-card sub-nav-container">
                     
-                    <div id="controle-agendas" class="sub-tab-content active">
+                    <div id="painel-controle-agendas" class="sub-tab-content active">
                         <h2>Entradas de Horas</h2>
                         <div class="action-bar">
-                            <button class="btn">Excel</button>
-                            <button class="btn">Enviar</button>
-                            <button class="btn">Buscar</button>
-                            <button class="btn">Limpar</button>
+                            <button class="btn">Excel</button> <button class="btn">Enviar</button>
+                            <button class="btn">Buscar</button> <button class="btn">Limpar</button>
                         </div>
                         <table class="simple-table">
                             <thead>
                                 <tr>
-                                    <th>Recurso</th>
-                                    <th>Data</th>
-                                    <th>Início</th>
-                                    <th>Fim</th>
-                                    <th>Duração</th>
-                                    <th>Status</th>
-                                    <th>Projeto</th>
-                                    <th>Tarefa</th>
-                                    <th>Nome Coordenador do Projeto</th>
-                                    <th>Unidade Organizacional</th>
+                                    <th>Recurso</th> <th>Data</th> <th>Início</th> <th>Fim</th>
+                                    <th>Duração</th> <th>Status</th> <th>Projeto</th> <th>Tarefa</th>
+                                    <th>Nome Coordenador do Projeto</th> <th>Unidade Organizacional</th>
                                 </tr>
                             </thead>
                              <tr class="table-filter-row">
-                                <td><input type="text"></td>
-                                <td><input type="text"></td>
-                                <td><input type="text"></td>
-                                <td><input type="text"></td>
-                                <td><input type="text"></td>
-                                <td><input type="text"></td>
-                                <td><input type="text"></td>
-                                <td><input type="text"></td>
-                                <td><input type="text"></td>
+                                <td><input type="text"></td> <td><input type="text"></td> <td><input type="text"></td>
+                                <td><input type="text"></td> <td><input type="text"></td> <td><input type="text"></td>
+                                <td><input type="text"></td> <td><input type="text"></td> <td><input type="text"></td>
                                 <td><input type="text"></td>
                             </tr>
                             <tbody>
                                 <tr>
-                                    <td>Ana Silva</td>
-                                    <td>05/11/2025</td>
-                                    <td>09:00</td>
-                                    <td>18:00</td>
-                                    <td>8,00</td>
-                                    <td class="status-aprovado">Aprovado</td>
-                                    <td>P-001 - Cliente X</td>
-                                    <td>Implantação Financeiro</td>
-                                    <td>Renato Ormelezzi</td>
-                                    <td>Serviços SP</td>
+                                    <td>Ana Silva</td> <td>05/11/2025</td> <td>09:00</td> <td>18:00</td>
+                                    <td>8,00</td> <td class="status-aprovado">Aprovado</td> <td>P-001 - Cliente X</td>
+                                    <td>Implantação Financeiro</td> <td>Renato Ormelezzi</td> <td>Serviços SP</td>
                                 </tr>
                                  <tr>
-                                    <td>Bruno Costa</td>
-                                    <td>05/11/2025</td>
-                                    <td>09:00</td>
-                                    <td>18:00</td>
-                                    <td>8,00</td>
-                                    <td class="status-pendente">Pendente</td>
-                                    <td>P-002 - Cliente Y</td>
-                                    <td>Desenvolvimento Fluig</td>
-                                    <td>Fernanda Batista</td>
-                                    <td>Serviços SP</td>
+                                    <td>Bruno Costa</td> <td>05/11/2025</td> <td>09:00</td> <td>18:00</td>
+                                    <td>8,00</td> <td class="status-pendente">Pendente</td> <td>P-002 - Cliente Y</td>
+                                    <td>Desenvolvimento Fluig</td> <td>Fernanda Batista</td> <td>Serviços SP</td>
                                 </tr>
                                 <tr>
-                                    <td>Ana Silva</td>
-                                    <td>06/11/2025</td>
-                                    <td>09:00</td>
-                                    <td>17:00</td>
-                                    <td>7,00</td>
-                                    <td class="status-pendente">Pendente</td>
-                                    <td>P-001 - Cliente X</td>
-                                    <td>Implantação Financeiro</td>
-                                    <td>Renato Ormelezzi</td>
-                                    <td>Serviços SP</td>
+                                    <td>Ana Silva</td> <td>06/11/2025</td> <td>09:00</td> <td>17:00</td>
+                                    <td>7,00</td> <td class="status-pendente">Pendente</td> <td>P-001 - Cliente X</td>
+                                    <td>Implantação Financeiro</td> <td>Renato Ormelezzi</td> <td>Serviços SP</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                     
-                    <div id="relatorio-fechamento" class="sub-tab-content">
+                    <div id="painel-relatorio-fechamento" class="sub-tab-content">
                         <h2>Composições de Fechamento</h2>
                         <div class="action-bar">
-                            <button class="btn">Excel</button>
-                            <button class="btn">Buscar</button>
-                            <button class="btn">Limpar</button>
-                            <button class="btn">Atualizar</button>
+                            <button class="btn">Excel</button> <button class="btn">Buscar</button>
+                            <button class="btn">Limpar</button> <button class="btn">Atualizar</button>
                         </div>
                          <table class="simple-table">
                             <thead>
                                 <tr>
-                                    <th>Competência</th>
-                                    <th>Número Composição</th>
-                                    <th>Unidade Organizacional</th>
-                                    <th>Valor Escopo Fechado</th>
-                                    <th>Valor Apontamentos</th>
-                                    <th>Valor Total</th>
-                                    <th>Quantidade Horas</th>
-                                    <th>Status</th>
+                                    <th>Competência</th> <th>Número Composição</th> <th>Unidade Organizacional</th>
+                                    <th>Valor Escopo Fechado</th> <th>Valor Apontamentos</th> <th>Valor Total</th>
+                                    <th>Quantidade Horas</th> <th>Status</th>
                                 </tr>
                             </thead>
                              <tr class="table-filter-row">
-                                <td><input type="text"></td>
-                                <td><input type="text"></td>
-                                <td><input type="text"></td>
-                                <td><input type="text"></td>
-                                <td><input type="text"></td>
-                                <td><input type="text"></td>
-                                <td><input type="text"></td>
-                                <td><input type="text"></td>
+                                <td><input type="text"></td> <td><input type="text"></td> <td><input type="text"></td>
+                                <td><input type="text"></td> <td><input type="text"></td> <td><input type="text"></td>
+                                <td><input type="text"></td> <td><input type="text"></td>
                             </tr>
                             <tbody>
                                 <tr>
-                                    <td>Outubro/2025</td>
-                                    <td>C-00123</td>
-                                    <td>Serviços SP</td>
-                                    <td>R$ 0,00</td>
-                                    <td>R$ 25.000,00</td>
-                                    <td>R$ 25.000,00</td>
-                                    <td>160,00</td>
-                                    <td class="status-pendente">Pendente Aprovação</td>
+                                    <td>Outubro/2025</td> <td>C-00123</td> <td>Serviços SP</td>
+                                    <td>R$ 0,00</td> <td>R$ 25.000,00</td> <td>R$ 25.000,00</td>
+                                    <td>160,00</td> <td class="status-pendente">Pendente Aprovação</td>
                                 </tr>
                                 <tr>
-                                    <td>Setembro/2025</td>
-                                    <td>C-00101</td>
-                                    <td>Serviços SP</td>
-                                    <td>R$ 0,00</td>
-                                    <td>R$ 22.000,00</td>
-                                    <td>R$ 22.000,00</td>
-                                    <td>140,00</td>
-                                    <td class="status-aprovado">Aprovado</td>
+                                    <td>Setembro/2025</td> <td>C-00101</td> <td>Serviços SP</td>
+                                    <td>R$ 0,00</td> <td>R$ 22.000,00</td> <td>R$ 22.000,00</td>
+                                    <td>140,00</td> <td class="status-aprovado">Aprovado</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                     
-                    <div id="revalidacao-email" class="sub-tab-content">
+                    <div id="painel-revalidacao-email" class="sub-tab-content">
                         <h2>Revalidação de Email</h2>
                         <p>Gerencie os e-mails dos seus recursos para garantir que estejam sempre atualizados.</p>
                         <table class="simple-table">
@@ -375,7 +346,7 @@
                         </table>
                     </div>
                     
-                    <div id="treinamentos" class="sub-tab-content">
+                    <div id="painel-treinamentos" class="sub-tab-content">
                         <h2>Treinamentos e Certificação</h2>
                         <p>Acompanhe o status dos treinamentos obrigatórios (MIT) e certificações.</p>
                         
@@ -410,67 +381,113 @@
                 </div>
             </div>
 
-            <div id="busca-recursos" class="main-tab-content">
-                <div class="content-card">
-                    <h2>Demandas Abertas (Oportunidades)</h2>
-                    <p>Encontre novas oportunidades de alocação para sua equipe.</p>
-                     <table class="simple-table">
-                        <thead> <tr> <th>Demanda</th> <th>Localidade</th> <th>Período Estimado</th> <th>Ação</th> </tr> </thead>
-                        <tbody>
-                            <tr>
-                                <td>[VAGA-105] Analista de Implantação Protheus Sênior (Financeiro)</td>
-                                <td>Remoto</td>
-                                <td>3 meses</td>
-                                <td><a href="#" class="btn btn-small btn-success">Indicar Recurso</a></td>
-                            </tr>
-                            <tr>
-                                <td>[VAGA-108] Desenvolvedor Fluig Pleno</td>
-                                <td>São Paulo (Híbrido)</td>
-                                <td>6 meses</td>
-                                <td><a href="#" class="btn btn-small btn-success">Indicar Recurso</a></td>
-                            </tr>
-                        </tbody>
+            <div id="busca-demandas" class="main-tab-content">
+                
+                <nav class="sub-nav">
+                    <button class="sub-nav-btn active" onclick="openSubTab(event, 'demandas-oportunidades')">Oportunidades</button>
+                    <button class="sub-nav-btn" onclick="openSubTab(event, 'demandas-equipe')">Equipe (Currículos)</button>
+                </nav>
+
+                <div class="content-card sub-nav-container">
+                
+                    <div id="demandas-oportunidades" class="sub-tab-content active">
+                        <h2>Demandas Abertas (Oportunidades)</h2>
+                        <p>Encontre novas oportunidades de alocação para sua equipe.</p>
+                         <table class="simple-table">
+                            <thead> <tr> <th>Demanda</th> <th>Localidade</th> <th>Período Estimado</th> <th>Ação</th> </tr> </thead>
+                            <tbody>
+                                <tr>
+                                    <td>[VAGA-105] Analista de Implantação Protheus Sênior (Financeiro)</td>
+                                    <td>Remoto</td>
+                                    <td>3 meses</td>
+                                    <td><a href="#" class="btn btn-small btn-success">Indicar Recurso</a></td>
+                                </tr>
+                                <tr>
+                                    <td>[VAGA-108] Desenvolvedor Fluig Pleno</td>
+                                    <td>São Paulo (Híbrido)</td>
+                                    <td>6 meses</td>
+                                    <td><a href="#" class="btn btn-small btn-success">Indicar Recurso</a></td>
+                                </tr>
+                            </tbody>
                         </table>
+                    </div>
+                    
+                    <div id="demandas-equipe" class="sub-tab-content">
+                        <h2>Gerenciar Equipe e Currículos</h2>
+                        <p>Mantenha o currículo dos seus recursos atualizado para facilitar a alocação em novas demandas.</p>
+                        <ul class="recurso-list" id="equipe-list-body">
+                            </ul>
+                    </div>
+                
                 </div>
             </div>
             
         </main>
     </div>
 
+    <div id="curriculo-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="curriculo-modal-title">Editar Currículo</h2>
+                <span class="close-btn" onclick="closeModal('curriculo-modal')">&times;</span>
+            </div>
+            <div class="form-group">
+                <label for="cv-nome">Nome do Recurso</label>
+                <input type="text" id="cv-nome" readonly>
+            </div>
+            <div class="form-group">
+                <label for="cv-posicao">Posição Atual / Cargo</label>
+                <input type="text" id="cv-posicao">
+            </div>
+            <div class="form-group">
+                <label for="cv-resumo">Resumo Profissional (Breve descrição)</label>
+                <textarea id="cv-resumo" rows="4"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="cv-competencias">Principais Competências (Separadas por vírgula)</label>
+                <textarea id="cv-competencias" rows="3" placeholder="Ex: Protheus Financeiro, Fluig, SQL Server, Gestão de Projetos..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="cv-certificacoes">Certificações Relevantes</label>
+                <textarea id="cv-certificacoes" rows="3" placeholder="Ex: Certificação Protheus - Faturamento (Válida até 01/01/2027)"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" onclick="salvarCurriculo()">Salvar Currículo</button>
+            </div>
+        </div>
+    </div>
+    
     <script>
         // --- BANCO DE DADOS (MOCK) ---
         // Fonte única de verdade para os recursos
-        const mockRecursos = [
+        let mockRecursos = [
             {
-                id: 1,
-                nome: "Ana Silva",
-                email: "ana.silva@acme.com",
-                posicao: "Consultora Protheus Sênior",
-                statusEmail: "Verificado",
-                statusTreinamento: "Concluído"
+                id: 1, nome: "Ana Silva", email: "ana.silva@acme.com",
+                posicao: "Consultora Protheus Sênior", statusEmail: "Verificado", statusTreinamento: "Concluído",
+                cv: { resumo: "Consultora com 5 anos de experiência em implantação de módulos financeiros do Protheus.", competencias: "Protheus Financeiro, Contabilidade, SQL", certificacoes: "Certificação Protheus - Faturamento (Válida até 01/01/2027)" }
             },
             {
-                id: 2,
-                nome: "Bruno Costa",
-                email: "bruno.costa@acme.com",
-                posicao: "Desenvolvedor Fluig Pleno",
-                statusEmail: "Verificado",
-                statusTreinamento: "Em Andamento"
+                id: 2, nome: "Bruno Costa", email: "bruno.costa@acme.com",
+                posicao: "Desenvolvedor Fluig Pleno", statusEmail: "Verificado", statusTreinamento: "Em Andamento",
+                cv: { resumo: "Desenvolvedor focado em customizações Fluig e desenvolvimento de workflows.", competencias: "Fluig, Java, JavaScript, HTML/CSS", certificacoes: "Certificação Fluig Developer" }
             },
             {
-                id: 3,
-                nome: "Carla Souza",
-                email: "carla.souza@acme.com",
-                posicao: "Analista de RH Júnior",
-                statusEmail: "Revalidar",
-                statusTreinamento: "Não Iniciado"
+                id: 3, nome: "Carla Souza", email: "carla.souza@acme.com",
+                posicao: "Analista de RH Júnior", statusEmail: "Revalidar", statusTreinamento: "Não Iniciado",
+                cv: { resumo: "", competencias: "Protheus RH", certificacoes: "" }
             }
         ];
+        
+        // Guarda o ID do recurso que está sendo editado
+        let currentEditingRecursoId = null;
 
         // --- LÓGICA DAS ABAS ---
         
         let activeMainTab = 'meu-contrato';
-        let activeSubTab = 'controle-agendas';
+        let activeSubTabs = {
+            'painel-fornecedor': 'painel-controle-agendas',
+            'busca-demandas': 'demandas-oportunidades'
+        };
 
         function openMainTab(evt, tabName) {
             document.querySelectorAll('.main-tab-content').forEach(tab => tab.style.display = "none");
@@ -478,21 +495,41 @@
             document.getElementById(tabName).style.display = "block";
             evt.currentTarget.classList.add('active');
             activeMainTab = tabName;
+            
+            // Se a aba clicada tiver sub-abas, abre a sub-aba ativa
+            if (activeSubTabs[tabName]) {
+                const subTabId = activeSubTabs[tabName];
+                // Simula um clique no primeiro botão dessa sub-aba para garantir consistência
+                const firstSubBtn = document.querySelector(`#${tabName} .sub-nav-btn[onclick*="'${subTabId}'"]`);
+                if (firstSubBtn) openSubTab({ currentTarget: firstSubBtn }, subTabId);
+            }
         }
         
         function openSubTab(evt, tabName) {
-            document.querySelectorAll('.sub-tab-content').forEach(tab => tab.style.display = "none");
-            document.querySelectorAll('.sub-nav-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(tabName).style.display = "block";
+            // Encontra o contêiner pai da sub-aba (ex: 'painel-fornecedor' ou 'busca-demandas')
+            const parentTab = evt.currentTarget.closest('.main-tab-content');
+            
+            parentTab.querySelectorAll('.sub-tab-content').forEach(tab => tab.style.display = "none");
+            parentTab.querySelectorAll('.sub-nav-btn').forEach(btn => btn.classList.remove('active'));
+            
+            parentTab.querySelector(`#${tabName}`).style.display = "block";
             evt.currentTarget.classList.add('active');
-            activeSubTab = tabName;
+            
+            // Salva a sub-aba ativa para o painel principal
+            const parentTabId = parentTab.id;
+            activeSubTabs[parentTabId] = tabName;
+
+            // Renderiza o conteúdo da aba Equipe se for ela
+            if (tabName === 'demandas-equipe') {
+                renderEquipeTab();
+            }
         }
 
         // --- RENDERIZAÇÃO DAS TABELAS DINÂMICAS (ESPELHADAS) ---
         
         function renderRevalidacaoEmail() {
             const tbody = document.getElementById('revalidacao-body');
-            tbody.innerHTML = ''; // Limpa a tabela
+            tbody.innerHTML = ''; 
             mockRecursos.forEach(recurso => {
                 const statusClass = recurso.statusEmail === 'Verificado' ? 'status-verificado' : 'status-revalidar';
                 const acaoBotao = recurso.statusEmail === 'Revalidar' ? '<button class="btn btn-small btn-primary">Revalidar</button>' : '-';
@@ -509,12 +546,12 @@
         
         function renderTreinamentos() {
             const tbody = document.getElementById('treinamentos-body');
-            tbody.innerHTML = ''; // Limpa a tabela
+            tbody.innerHTML = ''; 
             mockRecursos.forEach(recurso => {
                 let statusClass = '';
                 if(recurso.statusTreinamento === 'Concluído') statusClass = 'status-aprovado';
                 else if(recurso.statusTreinamento === 'Em Andamento') statusClass = 'status-pendente';
-                else statusClass = 'status-revalidar'; // Para "Não Iniciado"
+                else statusClass = 'status-revalidar'; 
 
                 tbody.innerHTML += `
                     <tr>
@@ -528,7 +565,7 @@
         
         function renderMeusRecursos() {
             const tbody = document.getElementById('recursos-dashboard-body');
-            tbody.innerHTML = ''; // Limpa a tabela
+            tbody.innerHTML = ''; 
             mockRecursos.forEach(recurso => {
                 const statusEmailClass = recurso.statusEmail === 'Verificado' ? 'status-verificado' : 'status-revalidar';
                 let statusTreinamentoClass = '';
@@ -540,24 +577,96 @@
                     <tr>
                         <td>${recurso.nome}</td>
                         <td>${recurso.email}</td>
-                        <td>${recurso.posicao}</td>
                         <td class="${statusEmailClass}">${recurso.statusEmail}</td>
                         <td class="${statusTreinamentoClass}">${recurso.statusTreinamento}</td>
                     </tr>
                 `;
             });
         }
+        
+        // --- NOVAS FUNÇÕES: ABA EQUIPE E MODAL CV ---
+        
+        function renderEquipeTab() {
+            const listEl = document.getElementById('equipe-list-body');
+            listEl.innerHTML = '';
+            mockRecursos.forEach(recurso => {
+                listEl.innerHTML += `
+                    <li class="recurso-card">
+                        <div class="recurso-info">
+                            <h3>${recurso.nome}</h3>
+                            <p>${recurso.posicao || 'Posição não definida'}</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="openCurriculoModal(${recurso.id})">Ver/Editar Currículo</button>
+                    </li>
+                `;
+            });
+        }
+        
+        function openCurriculoModal(recursoId) {
+            currentEditingRecursoId = recursoId;
+            const recurso = mockRecursos.find(r => r.id === recursoId);
+            if (!recurso) return;
+            
+            document.getElementById('curriculo-modal-title').textContent = `Editar Currículo: ${recurso.nome}`;
+            document.getElementById('cv-nome').value = recurso.nome;
+            document.getElementById('cv-posicao').value = recurso.posicao || '';
+            document.getElementById('cv-resumo').value = recurso.cv.resumo || '';
+            document.getElementById('cv-competencias').value = recurso.cv.competencias || '';
+            document.getElementById('cv-certificacoes').value = recurso.cv.certificacoes || '';
+            
+            openModal('curriculo-modal');
+        }
+        
+        function salvarCurriculo() {
+            if (currentEditingRecursoId === null) return;
+            
+            const recurso = mockRecursos.find(r => r.id === currentEditingRecursoId);
+            if (recurso) {
+                // Atualiza o banco de dados MOCK
+                recurso.posicao = document.getElementById('cv-posicao').value;
+                recurso.cv.resumo = document.getElementById('cv-resumo').value;
+                recurso.cv.competencias = document.getElementById('cv-competencias').value;
+                recurso.cv.certificacoes = document.getElementById('cv-certificacoes').value;
+                
+                alert(`Currículo de ${recurso.nome} salvo!`);
+                closeModal('curriculo-modal');
+                
+                // Re-renderiza as abas que dependem desses dados
+                renderEquipeTab();
+                renderMeusRecursos(); 
+            }
+            currentEditingRecursoId = null;
+        }
+
+        // --- FUNÇÕES DE MODAL GENÉRICAS ---
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        
+        // Fecha modal clicando fora
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = "none";
+            }
+        }
 
         // Define o estado inicial ao carregar a página
         document.addEventListener('DOMContentLoaded', () => {
             // Ativa as abas padrão
             document.getElementById(activeMainTab).style.display = "block";
-            document.getElementById(activeSubTab).style.display = "block";
+            // Ativa a sub-aba padrão do primeiro painel
+            document.getElementById(activeSubTabs['painel-fornecedor']).style.display = "block";
+            // Ativa a sub-aba padrão do segundo painel
+            document.getElementById(activeSubTabs['busca-demandas']).style.display = "block";
             
             // Renderiza as tabelas dinâmicas
             renderRevalidacaoEmail();
             renderTreinamentos();
             renderMeusRecursos();
+            renderEquipeTab(); // Renderiza a aba de equipe também
         });
     </script>
 </body>
